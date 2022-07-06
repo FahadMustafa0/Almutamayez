@@ -1,0 +1,1226 @@
+
+{% extends 'base.html'%}  
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title%}
+Report Page
+{% endblock title%}
+{% block content%}
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header" style="padding : 20px">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Generate Report</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Report</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+
+
+         <!-- /Modal -->
+         <div class="modal fade" id="tripsmodal">
+                <div class="modal-dialog">
+                        <div class="modal-content">
+                                      <div class="modal-header">
+                                            <h4 class="modal-title">Report Record Not Found </h4>
+                                            <button type="button" id="closemodal" class="close" data-dismiss="modal" aria-label="Close">
+                                                   <span aria-hidden="true">&times;</span>
+                                            </button>
+                                      </div>
+                          <div class="modal-body">
+                                <h3> No record Found on your selected Dates</h3>
+                          </div>
+                          <!-- /.modal-content -->
+                        </div>
+                      </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!--/modal-->
+
+
+
+            <!-- Main content -->
+            <div style="margin: 20px;"class="invoice p-3 mb-3">
+
+              <!-- title row -->
+              <div style="padding-top: 30px;">
+                <img  src="{% static 'dist/img/logo.jpeg'%}" alt="logo " height="130" width="200">
+                </div>
+              <div style="text-align: center;">
+              <h1 id="report_title"></h1>
+              </div>
+              <div style="padding-right : 15px; padding-top: 20px; padding-bottom: 5px; " class="row">
+
+                <div style="padding-left: 30px" class="col-sm-6">
+                    {% comment %} hidden data fields {% endcomment %}
+                    <input type='hidden' id ='fromDate' value={{fromDate}}>
+                    <input type='hidden' id ='toDate' value={{toDate}}>
+                    <input type='hidden' id ='customer' value={{customer.id}}>
+                    <input type='hidden' id ='category' value={{category}}>
+                    <input type='hidden' id ='csrf' value={{csrf}}>
+                    <input type='hidden' id ='reportId' value={{id}}>
+                    <input type='hidden' id ='choice' value={{choice}}>
+ 
+
+                   <b>Report No:</b> <span style="font-size:15px">1000000{{reportNo}}/AL Mutamayez Drainage</span>
+                    
+                </div>
+                <div style="padding-left: 30px" class="col-sm-6">
+
+                 
+                 <span style="font-size:15px" class="float-right"><b>From :</b><span id="from">{{fromDate}}</span><tab><b> To :</b><span id="to">{{toDate}} </span>   </span>
+                    
+              </div>
+                <div  style="padding-right: 230px" class="col-sm-6 ">
+                  <h2 id="report_name"class="float-right">
+
+
+                  </h2>
+                </div>
+                <!-- /.col -->
+              </div>
+
+              <div style="padding-top: 20px">
+              <hr  class="bg-danger border-8 border-top ">
+              </div>
+              <!-- info row -->
+              <div style="padding-left: 20px; padding-right: 10px;" class="row invoice-info">
+
+                <div class="col-sm-6 invoice-col">
+                  <br><br>
+
+
+                </div>
+                <!-- /.col -->
+
+                <!-- /.col -->
+                <div class="col-sm-6 invoice-col text-center">
+                  <strong> Date: </strong>
+                  {{date}}<br>
+
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row --> 
+
+              <!-- Table row -->
+              <div  style="padding-left: 20px; padding-right: 10px; " class="row">
+                <div class="col-12 table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                    <tr id="table_columns">
+
+
+                    </tr>
+                    </thead>
+                    <tbody id="report_records">
+
+
+                    <tr>
+                      <td></td>
+
+                    </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+               
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+              <div style="padding-left: 20px;"  class="row" id="last_line"> </div>
+
+              <!-- /.row -->
+
+              <!-- this row will not appear when printing -->
+              <div style="padding-left: 20px;  padding-right: 10px;" class="row no-print">
+                <div class="col-12">
+                  <a id="print" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+
+
+                </div>
+              </div>
+            </div>
+            <!-- /.invoice -->
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+
+
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+ <script>
+  $( document ).ready(function() {
+
+  
+
+  let category=$('#category').val()
+  let toDate=$('#toDate').val()
+  let fromDate=$('#fromDate').val()
+  let customer=$('#customer').val()
+  let csrf_token=$('#csrf').val()
+  let choice=$('#choice').val()
+  let reportId=$('#reportId').val()
+  let trip_charges = '{{ customer.tripCharges }} '
+  var date1=changeFormate(fromDate)
+  var date2=changeFormate(toDate)
+  $('#from').html(date1)
+  $('#to').html(date2)
+
+  if (choice==1){
+
+                    if (category=="tax"){
+                    
+                    $('#report_name').append("Tax Report")
+                    $('#table_columns').append(`
+                        <th>Sr.No</th>
+                        <th>Customer Name</th>
+                        <th>Invoice #</th>
+                        <th>Invoice Amount</th>
+                        <th>Tax Amount</th>
+                                            `)
+                                      }
+                    else if (category=="trip"){
+                     
+                      $('#report_name').append("Trips Report")
+
+                      $('#table_columns').append(`
+                        <th>Sr.No</th>
+                        <th>Customer Name</th>
+                        <th>Date</th>
+                        <th># of Trips</th>
+                        <th>Truck #</th>
+                        <th>Driver</th>
+                        <th>Vat %</th>
+                        <th>Vat Amount</th>
+                        <th>Receivable Amount</th>
+
+                                            `)
+                                        }
+
+                }
+/*
+else if (choice==2){
+                          }
+else if (choice==3){
+                          }
+else if (choice==4){
+                          }
+else if (choice==5){
+                          }
+else if (choice==6){
+                          } */
+
+
+
+   /* $('#report_records').append(`
+    <tr>
+        <td>1</td>
+        <td>Trips from <strong>{{fromDate}}</strong> to <strong>{{toDate}}</strong></td>
+        <td><span id="QTY"></span></td>
+        <td ><span id="rate">{{customer.tripCharges}}</span></td>
+        <td><span id="amount"></span></td>
+    </tr>`)
+    */
+
+    $.ajax({
+      type : "POST" ,
+      url :  '/createreport/',
+      data: {toDate:toDate,fromDate:fromDate,choice:choice,reportId:reportId,category:category},
+     headers: {'X-CSRFToken': csrf_token},
+  // data : {id:'{{id}}'},
+
+      success: function(response){
+        report_data=response.report_data
+        staff_expense=response.staff_expense
+        truck_expense=response.truck_expense
+        office_expense=response.office_expense
+        other_expense=response.other_expense
+        if (report_data){
+          count=report_data.length
+        }
+        else{
+          
+          count=staff_expense.length+truck_expense.length+office_expense.length+other_expense.length
+        }
+        let route=1
+        if (count!=0){
+          //console.log(tripsDetail)
+          i=1;
+          if (reportId=="1"){
+                        
+                        if (category=="tax"){
+                          $('#report_title').html("General Tax Report")
+                        let total_tax=0
+                        let total_amount=0
+                        $('#table_columns').append(`
+                        <th>Sr.No</th>
+                        <th>Customer Name</th>
+                        <th>Invoice Number</th>
+                        <th>Invoice Amount</th>
+                        <th>Invoice Vat</th>
+                        
+
+                                            `)
+                                      report_data.forEach((invoice, index) => {
+                                        $('#report_records').append(`
+                                        <tr>
+                                            <td>${i}</td>
+                                            <td>${invoice.user.first_name} ${invoice.user.last_name}</td>
+                                            <td><strong>${invoice.payment_no}</strong></td>
+                                            <td >${invoice.payment_amount}</td>
+                                            <td>${invoice.tax}</td>
+                                        </tr>`)
+                                        total_tax=total_tax+invoice.tax
+                                        total_amount=total_amount+invoice.payment_amount
+                                        i++;
+                                        });
+                                        $('#report_records').append(`
+                                        <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td ><strong>Total Amount : </strong>${total_amount}</td>
+                                          <td><strong><strong>Total Tax :</strong></strong>${total_tax}</td>
+                                      </tr>`)
+
+
+                                    }
+
+                      else if (category=="trip"){
+                        i=1;
+                        $('#report_title').html("General Trips Report")
+                      let nft=0
+                      let totalVatAmount=0
+                      let totalAmount=0
+                              $('#table_columns').append(`
+                              <th>Sr.No</th>
+                              <th>Date</th>
+                              <th>Customer Name</th>
+                              <th>No. of Trips</th>
+                              <th>Truck#</th>
+                              <th>Driver Name</th>
+                              <th>VAT%</th>
+                              <th>VAT Amount</th>
+                              <th>Receivable Amount</th>
+                              
+
+                                                  `)
+
+                                      report_data.forEach((trip, index) => {
+                                        var date=changeFormate(trip.date)
+                                        $('#report_records').append(`
+                                        <tr>
+                                          <td>${i}</td>
+                                            <td>${date}</td>
+                                            <td>${trip.customer.user.first_name} ${trip.customer.user.last_name}</td>
+                                            {% comment %} <td><strong>${date}</strong></td> {% endcomment %}
+                                            <td >${trip.nft}</td>
+                                            <td>${trip.TruckNo.truckNumber}</td>
+                                            <td>${trip.DriverName.user.first_name} ${trip.DriverName.user.last_name}</td>
+                                            <td>${trip.Vat}</td>
+                                            <td>${trip.vatAmount}</td>
+                                            <td>${trip.ReceivableAmount+trip.vatAmount}</td>
+
+                                        </tr>`)
+                                        nft=nft+trip.nft
+                                        totalVatAmount=totalVatAmount+trip.vatAmount
+                                        totalAmount=totalAmount+trip.ReceivableAmount
+                                        //total_amount=total_amount+invoice.payment_amount
+                                        i++;
+                                        });
+                                        $('#report_records').append(`
+                                        <tr>
+                                          
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td ><strong>Total Trips : </strong>${nft}</td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td><strong><strong>Total Tax :</strong></strong>${totalVatAmount}</td>
+                                          <td><strong><strong>Total Amount :</strong></strong>${totalAmount+totalVatAmount}</td>
+
+                                        </tr>`)
+
+
+                                    }
+            }
+            else if (reportId=="2"){
+                      i=1;
+                      $('#report_title').html("Truck Wise Trips Report")
+                      let nft=0
+                      let totalVatAmount=0
+                      let totalAmount=0
+                      $('#table_columns').append(`
+                          <th>Sr.No</th>
+                              <th>Date</th>
+                              <th>Customer Name</th>
+                              <th>No of trips</th>
+                              <th>Truck#</th>
+                              <th>Driver Name</th>
+                              <th>VAT%</th>
+                              <th>VAT Amount</th>
+                              <th>Receivable Amount</th>
+                              
+
+                                                  `)
+
+                                report_data.forEach((trip, index) => {
+                                  var date1=changeFormate(trip.date)
+                                  $('#report_records').append(`
+                                  <tr>
+                                    <td>${i}</td>
+                                      <td>${date1}</td>
+                                      <td>${trip.customer.user.first_name} ${trip.customer.user.last_name}</td>
+                                      {% comment %} <td><strong>${trip.date}</strong></td> {% endcomment %}
+                                      <td >${trip.nft}</td>
+                                      <td>${trip.TruckNo.truckNumber}</td>
+                                      <td>${trip.DriverName.user.first_name} ${trip.DriverName.user.last_name}</td>
+                                      <td>${trip.Vat}</td>
+                                      <td>${trip.vatAmount}</td>
+                                      <td>${trip.ReceivableAmount+trip.vatAmount}</td>
+
+                                  </tr>`)
+                                  nft=nft+trip.nft
+                                  totalVatAmount=totalVatAmount+trip.vatAmount
+                                  totalAmount=totalAmount+trip.ReceivableAmount
+                                  i++;
+                                  });
+                                  $('#report_records').append(`
+                                        <tr>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td ><strong>Total Trips : </strong>${nft}</td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td><strong><strong>Total Tax :</strong></strong>${totalVatAmount}</td>
+                                          <td><strong><strong>Total Amount :</strong></strong>${totalAmount+totalVatAmount}</td>
+
+                                        </tr>`)
+                                  
+
+            
+            }
+            else if (reportId=="3"){
+              $('#report_title').html("Customer Wise Trips Report")
+
+              i=1;
+              let nft=0
+              let totalVatAmount=0
+              let totalAmount=0
+              $('#table_columns').append(`
+              <th>Sr.No</th>
+                  <th>Date</th>
+                  <th>Customer Name</th>
+                  <th>No of trips</th>
+                  <th>Truck#</th>
+                  <th>Driver Name</th>
+                  <th>VAT%</th>
+                  <th>VAT Amount</th>
+                  <th>Receivable Amount</th>
+                  
+
+                                      `)
+      
+                        report_data.forEach((trip, index) => {
+                          var date=changeFormate(trip.date)
+                          $('#report_records').append(`
+                          <tr>
+                            <td>${i}</td>
+                              <td>${date}</td>
+                              <td>${trip.customer.user.first_name} ${trip.customer.user.last_name}</td>
+                              {% comment %} <td><strong>${trip.date}</strong></td> {% endcomment %}
+                              <td >${trip.nft}</td>
+                              <td>${trip.TruckNo.truckNumber}</td>
+                              <td>${trip.DriverName.user.first_name} ${trip.DriverName.user.last_name}</td>
+                              <td>${trip.Vat}</td>
+                              <td>${trip.vatAmount}</td>
+                              <td>${trip.ReceivableAmount+trip.vatAmount}</td>
+
+                          </tr>`)
+                          nft=nft+trip.nft
+                          totalVatAmount=totalVatAmount+trip.vatAmount
+                          totalAmount=totalAmount+trip.ReceivableAmount
+                          i++;
+                          });
+                          $('#report_records').append(`
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td ><strong>Total Trips : ${nft}</strong></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td><strong><strong>Total Tax :</strong></strong>${totalVatAmount}</td>
+                                  <td><strong><strong>Total Amount :</strong></strong>${totalAmount+totalVatAmount}</td>
+
+                                </tr>`)
+
+            
+            }
+            else if (reportId=="4"){
+              $('#report_title').html("Truck Wise Expense Report")
+              i=1;
+              let renewalFee=0
+              let fuel_kilometers=0
+              let fuel_litters=0
+              let fuel=0
+              let maintenance=0
+              let repair_replace=0
+              let parking=0
+              let others=0
+              let vat=0
+              let totalAmount=0
+              $('#report_records').append(`
+                <tr>
+                  
+                    <td><strong>Date</strong></td>
+                    <td><strong>Truck Number</strong></td>
+                    <td><strong>Renewal Fee</strong></td>
+                    <td><strong>Fuel Kilometers</strong></td>
+                    <td><strong>Fuel Litters</strong></td>
+                    <td><strong>Fuel</strong></td>
+                    <td><strong>Maintenance</strong></td>
+                    <td><strong>Repair_replace</strong></td>
+                    <td><strong>Parking</strong></td>
+                    <td><strong>Others</strong></td>
+                    <td><strong>Vat</strong></td>
+                    <td><strong>Total Amount</strong></td>
+
+                </tr>`) 
+              report_data.forEach((expense, index) => {
+                var date=changeFormate(expense.date)
+               
+                $('#report_records').append(`
+                <tr>
+                    <td>${date}</td>
+                    <td><strong>${expense.truck_no.truckNumber}</strong></td>
+                    <td >${expense.renewalFee}</td>
+                    <td>${expense.fuel_kilometers}</td>
+                    <td>${expense.fuel_litters}</td>
+                    <td>${expense.fuel}</td>
+                    <td>${expense.maintenance}</td>
+                    <td>${expense.repair_replace}</td>
+                    <td>${expense.parking}</td>
+                    <td>${expense.others}</td>
+                    <td>${expense.vat}</td>
+                    <td>${expense.totalAmount}</td>
+
+                </tr>`) 
+                renewalFee=renewalFee+expense.renewalFee
+                fuel_kilometers=fuel_kilometers+expense.fuel_kilometers
+                fuel_litters=fuel_litters+expense.fuel_litters
+                fuel=fuel+expense.fuel
+                maintenance=maintenance+expense.maintenance
+                repair_replace=repair_replace+expense.repair_replace
+                parking=parking+expense.parking
+                others=others+expense.others
+                vat=vat+expense.vat
+                totalAmount=totalAmount+expense.totalAmount
+                
+                i++;
+                });
+                $('#report_records').append(`
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td ><strong>Total  renewalFee : </strong><br>${renewalFee}</td>
+                                  <td ><strong>Total fuel_kilometers : </strong><br>${fuel_kilometers}</td>
+                                  <td ><strong>Total fuel_litters : </strong><br>${fuel_litters}</td>
+                                  <td ><strong>Total fuel : </strong><br>${fuel}</td>
+                                  <td ><strong>Total maintenance : </strong><br>${maintenance}</td>
+                                  <td><strong><strong>Total repair_replace :</strong></strong><br>${repair_replace}</td>
+                                  <td><strong><strong>Total parking :</strong></strong><br>${parking}</td>
+                                  <td><strong><strong>Total others :</strong></strong><br>${others}</td>
+                                  <td><strong><strong>Total vat :</strong></strong><br>${vat}</td>
+                                  <td><strong><strong>Total Amount :</strong></strong><br>${totalAmount+vat}</td>
+
+                      </tr>`)
+
+            
+            }
+            else if (reportId=="8"){
+              $('#report_title').html("Truck Wise Fuel Report")
+              i=1;
+              let renewalFee=0
+              let fuel_kilometers=0
+              let fuel_litters=0
+              let fuel=0
+              let maintenance=0
+              let repair_replace=0
+              let parking=0
+              let others=0
+              let vat=0
+              let totalAmount=0
+              $('#report_records').append(`
+                <tr>
+                  
+                    <td><strong>Date</strong></td>
+                    <td><strong>Truck Number</strong></td>
+                    <td><strong>Renewal Fee</strong></td>
+                    <td><strong>Fuel Kilometers</strong></td>
+                    <td><strong>Fuel Litters</strong></td>
+                    <td><strong>Fuel</strong></td>
+                    <td><strong>Maintenance</strong></td>
+                    <td><strong>Repair_replace</strong></td>
+                    <td><strong>Parking</strong></td>
+                    <td><strong>Others</strong></td>
+                    <td><strong>Vat</strong></td>
+                    <td><strong>Total Amount</strong></td>
+
+                </tr>`) 
+              report_data.forEach((expense, index) => {
+                var date=changeFormate(expense.date)
+               
+                $('#report_records').append(`
+                <tr>
+                    <td>${date}</td>
+                    <td><strong>${expense.truck_no.truckNumber}</strong></td>
+                    <td >${expense.renewalFee}</td>
+                    <td>${expense.fuel_kilometers}</td>
+                    <td>${expense.fuel_litters}</td>
+                    <td>${expense.fuel}</td>
+                    <td>${expense.maintenance}</td>
+                    <td>${expense.repair_replace}</td>
+                    <td>${expense.parking}</td>
+                    <td>${expense.others}</td>
+                    <td>${expense.vat}</td>
+                    <td>${expense.totalAmount}</td>
+
+                </tr>`) 
+                renewalFee=renewalFee+expense.renewalFee
+                fuel_kilometers=fuel_kilometers+expense.fuel_kilometers
+                fuel_litters=fuel_litters+expense.fuel_litters
+                fuel=fuel+expense.fuel
+                maintenance=maintenance+expense.maintenance
+                repair_replace=repair_replace+expense.repair_replace
+                parking=parking+expense.parking
+                others=others+expense.others
+                vat=vat+expense.vat
+                totalAmount=totalAmount+expense.totalAmount
+                
+                i++;
+                });
+                $('#report_records').append(`
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td ><strong>Total  renewalFee : </strong><br>${renewalFee}</td>
+                                  <td ><strong>Total fuel_kilometers : </strong><br>${fuel_kilometers}</td>
+                                  <td ><strong>Total fuel_litters : </strong><br>${fuel_litters}</td>
+                                  <td ><strong>Total fuel : </strong><br>${fuel}</td>
+                                  <td ><strong>Total maintenance : </strong><br>${maintenance}</td>
+                                  <td><strong><strong>Total repair_replace :</strong></strong><br>${repair_replace}</td>
+                                  <td><strong><strong>Total parking :</strong></strong><br>${parking}</td>
+                                  <td><strong><strong>Total others :</strong></strong><br>${others}</td>
+                                  <td><strong><strong>Total vat :</strong></strong><br>${vat}</td>
+                                  <td><strong><strong>Total Amount :</strong></strong><br>${totalAmount+vat}</td>
+
+                      </tr>`)
+
+            
+            }
+            else if (reportId=="9"){
+              $('#report_title').html("Truck Wise Maintenance")
+              i=1;
+              let renewalFee=0
+              let fuel_kilometers=0
+              let fuel_litters=0
+              let fuel=0
+              let maintenance=0
+              let repair_replace=0
+              let parking=0
+              let others=0
+              let vat=0
+              let totalAmount=0
+              $('#report_records').append(`
+                <tr>
+                  
+                    <td><strong>Date</strong></td>
+                    <td><strong>Truck Number</strong></td>
+                    <td><strong>Renewal Fee</strong></td>
+                    <td><strong>Fuel Kilometers</strong></td>
+                    <td><strong>Fuel Litters</strong></td>
+                    <td><strong>Fuel</strong></td>
+                    <td><strong>Maintenance</strong></td>
+                    <td><strong>Repair_replace</strong></td>
+                    <td><strong>Parking</strong></td>
+                    <td><strong>Others</strong></td>
+                    <td><strong>Vat</strong></td>
+                    <td><strong>Total Amount</strong></td>
+
+                </tr>`) 
+              report_data.forEach((expense, index) => {
+                var date=changeFormate(expense.date)
+               
+                $('#report_records').append(`
+                <tr>
+                    <td>${date}</td>
+                    <td><strong>${expense.truck_no.truckNumber}</strong></td>
+                    <td >${expense.renewalFee}</td>
+                    <td>${expense.fuel_kilometers}</td>
+                    <td>${expense.fuel_litters}</td>
+                    <td>${expense.fuel}</td>
+                    <td>${expense.maintenance}</td>
+                    <td>${expense.repair_replace}</td>
+                    <td>${expense.parking}</td>
+                    <td>${expense.others}</td>
+                    <td>${expense.vat}</td>
+                    <td>${expense.totalAmount}</td>
+
+                </tr>`) 
+                renewalFee=renewalFee+expense.renewalFee
+                fuel_kilometers=fuel_kilometers+expense.fuel_kilometers
+                fuel_litters=fuel_litters+expense.fuel_litters
+                fuel=fuel+expense.fuel
+                maintenance=maintenance+expense.maintenance
+                repair_replace=repair_replace+expense.repair_replace
+                parking=parking+expense.parking
+                others=others+expense.others
+                vat=vat+expense.vat
+                totalAmount=totalAmount+expense.totalAmount
+                
+                i++;
+                });
+                $('#report_records').append(`
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td ><strong>Total  renewalFee : </strong><br>${renewalFee}</td>
+                                  <td ><strong>Total fuel_kilometers : </strong><br>${fuel_kilometers}</td>
+                                  <td ><strong>Total fuel_litters : </strong><br>${fuel_litters}</td>
+                                  <td ><strong>Total fuel : </strong><br>${fuel}</td>
+                                  <td ><strong>Total maintenance : </strong><br>${maintenance}</td>
+                                  <td><strong><strong>Total repair_replace :</strong></strong><br>${repair_replace}</td>
+                                  <td><strong><strong>Total parking :</strong></strong><br>${parking}</td>
+                                  <td><strong><strong>Total others :</strong></strong><br>${others}</td>
+                                  <td><strong><strong>Total vat :</strong></strong><br>${vat}</td>
+                                  <td><strong><strong>Total Amount :</strong></strong><br>${totalAmount+vat}</td>
+
+                      </tr>`)
+
+            
+            }
+            else if (reportId=="5"){
+              $('#report_title').html("All Expense Report")
+              i=1;
+              totalAmount=0
+              totalAmount1=0
+              totalAmount2=0
+              totalAmount3=0
+              totalAmount4=0
+              totalAmount5=0
+              vat=0
+              vat1=0
+              vat2=0
+              vat3=0
+              vat4=0
+              vat5=0
+        //====================
+              console.log("{{{{{{{{{{",staff_expense,office_expense,other_expense,truck_expense)
+
+              $('#report_records').append(`
+                <tr>
+                    <td><strong>Staff Expenses</strong></td>
+                </tr>`) 
+              
+              $('#report_records').append(`
+                <tr>
+                    <td><strong>Date</strong></td>
+                    <td><strong>Staff</strong></td>
+                    <td><strong>Salary</strong></td>
+                    <td><strong>Deduction</strong></td>
+                    <td><strong>Remaining Salary</strong></td>
+                    <td><strong>Salary Paid By</strong></td>
+                    <td><strong>Visa Fee</strong></td>
+                    <td><strong>Eid Fee</strong></td>
+                    <td><strong>Medical Insurance</strong></td>
+                    <td><strong>Over Time</strong></td>
+                    <td><strong>Others</strong></td>
+                    <td><strong>VAT Amount</strong></td>
+                    <td><strong>Total Amount</strong></td>
+
+                </tr>`) 
+                staff_expense.forEach((expense, index) => {
+                  var date=changeFormate(expense.date)
+
+                $('#report_records').append(`
+                <tr>
+                    <td>${date}</td>
+                    <td>${expense.staff.user.first_name} ${expense.staff.user.last_name}</td>
+                    <td >${expense.salary}</td>
+                    <td >${expense.deduction}</td>
+                    <td >${expense.remaining_salary}</td>
+                    <td>${expense.salary_paid_by}</td>
+                    <td>${expense.visaFee}</td>
+                    <td>${expense.eidFee}</td>
+                    <td>${expense.medicalIns}</td>
+                    <td>${expense.overTime}</td>
+                    <td>${expense.others}</td>
+                    <td>${expense.vat}</td>
+                    <td>${expense.totalAmount+expense.vat}</td>
+
+                </tr>`) 
+                
+                totalAmount=totalAmount+expense.totalAmount
+                totalAmount1=totalAmount1+expense.totalAmount
+                vat=vat+expense.vat
+                vat1=vat1+expense.vat
+                
+                
+                i++;
+                });
+                $('#report_records').append(`
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td><strong>Total VAT Amount :<br></strong>${vat1}</td>
+                                  <td><strong><strong>Total Amount :<br></strong></strong>${totalAmount1+vat1}</td>
+
+                      </tr>`)
+            
+          //=============================
+
+
+          //====================
+
+
+          $('#report_records').append(`
+          <tr>
+              <td><strong>Truck Expenses</strong></td>
+          </tr>`) 
+        
+        $('#report_records').append(`
+          <tr>
+              <td><strong>Date</strong></td>
+              <td><strong>Truck_No</strong></td>
+              <td><strong>Renewal Fee</strong></td>
+              <td><strong>Fuel Kilometers</strong></td>
+              <td><strong>Fuel Litters</strong></td>
+              <td><strong>Fuel</strong></td>
+              <td><strong>Maintenance</strong></td>
+              <td><strong>Repair Replace</strong></td>
+              <td><strong>Parking</strong></td>
+              <td><strong>Others</strong></td>
+              <td><strong>VAT Amount</strong></td>
+              <td><strong>Total Amount</strong></td>
+
+          </tr>`) 
+          truck_expense.forEach((expense, index) => {
+            var date=changeFormate(expense.date)
+          $('#report_records').append(`
+          <tr>
+              <td>${date}</td>
+              <td>${expense.truck_no.truckNumber}</td>
+              <td >${expense.renewalFee}</td>
+              <td>${expense.fuel_kilometers}</td>
+              <td>${expense.fuel_litters}</td>
+              <td>${expense.fuel}</td>
+              <td>${expense.maintenance}</td>
+              <td>${expense.repair_replace}</td>
+              <td>${expense.parking}</td>
+              <td>${expense.others}</td>
+              <td>${expense.vat}</td>
+              <td>${expense.totalAmount+expense.vat}</td>
+
+          </tr>`) 
+          
+          totalAmount=totalAmount+expense.totalAmount
+          totalAmount2=totalAmount2+expense.totalAmount
+          vat=vat+expense.vat
+          vat2=vat2+expense.vat
+          
+          i++;
+          });
+          $('#report_records').append(`
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>Total VAT Amount :<br></strong>${vat2}</td>
+                            <td><strong><strong>Total Amount :<br></strong></strong>${totalAmount2+vat2}</td>
+
+                </tr>`)
+      
+    //=============================
+
+    //====================
+
+
+    $('#report_records').append(`
+    <tr>
+        <td><strong>Office Expenses</strong></td>
+    </tr>`) 
+  
+  $('#report_records').append(`
+    <tr>
+        <td><strong>Date</strong></td>
+        <td><strong>Vendor</strong></td>
+        <td><strong>Office Rent</strong></td>
+        <td><strong>Utility Bills</strong></td>
+        <td><strong>Stationary</strong></td>
+        <td><strong>Kitchen</strong></td>
+        <td><strong>Others</strong></td>
+        <td><strong>VAT Amount</strong></td>
+        <td><strong>Total Amount</strong></td>
+
+    </tr>`) 
+    office_expense.forEach((expense, index) => {
+      var date=changeFormate(expense.date)
+    $('#report_records').append(`
+    <tr>
+        <td>${date}</td>
+        <td>${expense.vendor}</td>
+        <td >${expense.officeRent}</td>
+        <td>${expense.utilityBills}</td>
+        <td>${expense.stationary}</td>
+        <td>${expense.kitchen}</td>
+        <td>${expense.others}</td>
+        <td>${expense.vat}</td>
+        <td>${expense.totalAmount+expense.vat}</td>
+
+    </tr>`) 
+    
+    totalAmount=totalAmount+expense.totalAmount
+    totalAmount3=totalAmount3+expense.totalAmount
+    vat=vat+expense.vat
+    vat3=vat3+expense.vat
+
+    i++;
+    });
+    $('#report_records').append(`
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      
+                      
+                      <td><strong>Total VAT Amount :<br></strong>${vat3}</td>
+                      <td><strong><strong>Total Amount :<br></strong></strong>${totalAmount3+vat3}</td>
+
+          </tr>`)
+
+//=============================
+
+//====================
+
+
+expenseAmount=0
+$('#report_records').append(`
+<tr>
+    <td><strong>Other Expenses</strong></td>
+</tr>`) 
+
+$('#report_records').append(`
+<tr>
+    <td><strong>Date</strong></td>
+    <td><strong>Vendor</strong></td>
+    <td><strong>Expense Name</strong></td>
+    <td><strong>Expense Amount</strong></td>
+    <td><strong>VAT Amount</strong></td>
+    <td><strong>Total Amount</strong></td>
+
+</tr>`) 
+other_expense.forEach((expense, index) => {
+  var date=changeFormate(expense.date)
+$('#report_records').append(`
+<tr>
+    <td>${date}</td>
+    <td>${expense.vendor}</td>
+    <td >${expense.expenseName}</td>
+    <td>${expense.expenseAmount}</td>
+    <td>${expense.vat}</td>
+    <td>${expense.totalAmount+expense.vat}</td>
+
+</tr>`) 
+
+totalAmount=totalAmount+expense.totalAmount
+totalAmount4=totalAmount4+expense.totalAmount
+vat=vat+expense.vat
+vat4=vat4+expense.vat
+expenseAmount=expenseAmount+expense.expenseAmount
+
+
+i++;
+});
+$('#report_records').append(`
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><strong>Total VAT Amount :<br></strong>${vat4}</td>
+                  <td><strong><strong>Total Amount :<br></strong></strong>${totalAmount4+vat4}</td>
+
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        
+
+</tr>
+     
+</tr>
+      `)
+      $('#report_records').append(`
+      <tr>
+          <td><strong>DischargePoint Expenses</strong></td>
+      </tr>`) 
+
+     
+
+
+      $('#report_records').append(`
+<tr>
+    <td><strong>Date</strong></td>
+    <td><strong>No. of Trips</strong></td>
+    <td><strong>VAT Amount</strong></td>
+    <td><strong>Total Discharge Cost</strong></td>
+
+</tr>`) 
+console.log("))))))))))))))))))))))",report_data)
+report_data.forEach((expense, index) => {
+  var date=changeFormate(expense.date)
+        $('#report_records').append(`
+        <tr>
+            <td>${date}</td>
+            <td>${expense.nft}</td>
+            <td >${expense.discharge_vat}</td>
+            <td>${expense.discharge_cost}</td>
+        
+        </tr>`) 
+        
+        totalAmount=totalAmount+expense.discharge_cost
+        totalAmount5=totalAmount5+expense.discharge_cost
+        //vat=vat+expense.discharge_vat
+        vat5=vat5+expense.discharge_vat
+        //expenseAmount=expenseAmount+expense.expenseAmount
+        
+        i++;
+        });
+        $('#report_records').append(`
+                        <tr>
+                          <td></td>
+                          
+                          <td></td>
+                          <td><strong>Total VAT Amount :<br></strong>${vat5}</td>
+                          <td><strong><strong>Total Discharge Cost :<br></strong></strong>${totalAmount5}</td>
+        
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                
+        
+        </tr>
+             
+        </tr>
+              `)
+
+
+
+
+      
+      $('#last_line').html(`<div  class="col-sm-6"><span style="font-size:16px"><b>Total Vat During Selected Dates : </b> ${vat+vat5}</span>  </div><div class="col-sm-6"> <span style="font-size:16px"><b>Total Amount During Selected Date : </b> ${totalAmount+vat}</span> </div>`)
+
+//=============================
+            
+            }
+            else if (reportId=="6"){
+              $('#report_title').html("Invoice Report")
+
+              i=1;
+              
+              let totalAmount=0
+              $('#report_records').append(`
+                <tr>
+                    <td><strong>Date</strong></td>
+                    <td><strong>Customer</strong></td>
+                    <td><strong>Invoice No</strong></td>
+                    <td><strong>Amount</strong></td>
+                    <td><strong>Status</strong></td>
+                    
+
+                </tr>`) 
+              report_data.forEach((invoice, index) => {
+                let check=invoice.payment_status
+               
+                color=""
+                if(check==true){
+                  status="Received"
+                  color="#60C833"
+                }
+                else{status="Pending"
+                      color="#E62E2D"}
+                $('#report_records').append(`
+                <tr>
+                    <td>${invoice.date}</td>
+                    <td><strong>${invoice.user.first_name} ${invoice.user.last_name}</strong></td>
+                    <td >${invoice.payment_no}</td>
+                    <td>${invoice.payment_amount}</td>
+                    
+                    <td><span style="color:${color}">${status}<span></td>
+                    
+
+                </tr>`) 
+
+                totalAmount=totalAmount+invoice.payment_amount
+                
+                i++;
+                });
+                $('#report_records').append(`
+                                <tr>
+                                  <td></td>
+                                  <td></td>
+                                  <td ></strong></td>
+                                  <td ><strong>Total Amount : </strong>${totalAmount}</td>
+                                  <td ></td>
+                                  
+                                  
+
+                      </tr>`)
+
+            
+            }
+
+            else if (reportId=="7"){
+              i=1;
+              $('#report_title').html("DischargePoint Expense Report")
+              let nft=0
+              let discharge_vat=0
+              let discharge_cost=0
+                    $('#report_records').append(`
+                    <th>Sr.No</th>
+                    <th>Date</th>
+                    <th>No. of Trips</th>
+                    <th>VAT Amount</th>
+                    <th>Total Cost Spent</th>
+                    
+
+                                        `)
+
+                            report_data.forEach((trip, index) => {
+                              var date=changeFormate(trip.date)
+                              $('#report_records').append(`
+                              <tr>
+                                <td>${i}</td>
+                                  <td>${date}</td>
+                                  <td >${trip.nft}</td>
+                                  <td>${trip.discharge_vat}</td>
+                                  <td>${trip.discharge_cost}</td>
+
+                              </tr>`)
+                              nft=nft+trip.nft
+                              discharge_vat=discharge_vat+trip.discharge_vat
+                              discharge_cost=discharge_cost+trip.discharge_cost
+                              //total_amount=total_amount+invoice.payment_amount
+                              i++;
+                              });
+                              $('#report_records').append(`
+                              <tr>
+                                <td></td>
+                                <td></td>
+                                <td ><strong>Total Trips : </strong>${nft}</td>
+                                
+                                
+                                <td><strong><strong>Total Vat Amount:</strong></strong>${discharge_vat}</td>
+                                <td><strong><strong>Total Discharge Cost :</strong></strong>${discharge_cost}</td>
+
+                              </tr>`)
+
+
+                          }
+            
+
+                        $(document).Toasts('create', {
+                          class: 'bg-info',
+                          title: 'Toast Title',
+                          subtitle: 'Subtitle',
+                          body: 'Report Generated',
+                          autohide: true
+                          });
+
+
+
+
+                //alert(nft)
+              }
+
+              
+        else{
+
+          //alert("No record Found according to your filter")
+          //window.location.replace("/generateinvoice")
+
+
+          $("#tripsmodal").modal('show');
+
+          $('#tripsmodal').on('hidden.bs.modal', function () {
+            window.location.replace("/generatereport/"+reportId)
+          })
+
+
+
+        }
+
+      }
+});
+
+});
+
+$("#print").click(function() {
+  window.addEventListener("load", window.print());
+})
+
+
+
+</script>
+
+{% endblock content%}

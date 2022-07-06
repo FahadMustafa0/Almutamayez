@@ -1,0 +1,20 @@
+// {
+//     "name": "Bad News",
+//     "short_name": "News",
+//     "start_url": "http://192.168.137.1:8000",
+//     "display": "standalone",
+//     "background_color": "#fff",
+//     "description": "A news app.",
+//     "icons": [
+//       {
+//         "src": "C:/Users/Fahad Mustafa/Desktop/ProjextLogistic/projectX/static/dist/img/admin.jpg",
+//         "sizes": "512x512",
+//         "type": "image/png"
+//       },
+//       {
+//         "src": "C:/Users/Fahad Mustafa/Desktop/ProjextLogistic/projectX/static/dist/img/admin.jpg",
+//         "sizes": "192x192",
+//         "type": "image/png"
+//       }
+//     ]
+//   }

@@ -1,0 +1,150 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block title%}
+Index Page
+{% endblock title%}
+{% block content%}
+
+<div class="content-wrapper">
+  <!-- Preloader -->
+  <div class="preloader flex-column justify-content-center align-items-center">
+    <img class="animation__shake" src="{% static 'dist/img/logotransparent.png'%}" alt="logo " height="150" width="200">
+  </div>
+  <!-- Content Header (Page header) -->
+  <div class="content-header" style="padding : 20px">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Dashboard{{contect_processor}}</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/index/">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-lg-4 col-6">
+          <!-- small box -->
+          <div class="small-box bg-info">
+            <div class="inner" style="padding-top :40px; padding-bottom :20px">
+
+
+              <h3>Trip Data</h3>
+            </div>
+            <div class="icon">
+              {% comment %} <ion-icon name="navigate-outline"></ion-icon> {% endcomment %}
+              {% comment %} <i class="ion ion-navigate-outline"></i> {% endcomment %}
+              <i class="fas fa-truck"></i>
+            </div>
+            <a href="/manageTripdata/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-6">
+          <!-- small box -->
+          <div class="small-box bg-success">
+            <div class="inner" style="padding-top :40px; padding-bottom :20px">
+
+
+              <h3>Expense Data</h3>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="/expenses/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-6">
+          <!-- small box -->
+          <div class="small-box bg-warning">
+            <div class="inner" style="padding-top :40px; padding-bottom :20px">
+
+
+              <h3>Payments Data</h3>
+            </div>
+            <div class="icon">
+              <i class="ion ion-cash"></i>
+            </div>
+            <a href="/payments/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+
+      {% comment %} Pie Chart and Cart code {% endcomment %}
+      
+      <div class="row">
+        <div class="col-lg-4 col-6">
+          <!-- small box -->
+          
+        </div>
+
+        <!-- ./col -->
+        <div class="col-lg-4 col-6">
+          <!-- small box -->
+          
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-4 col-6">
+          <!-- small box -->
+         
+        </div>
+        <!-- ./col -->
+
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+
+
+
+
+      <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-7 connectedSortable">
+
+          <!-- /.card -->
+
+          <!-- DIRECT CHAT -->
+
+          <!-- /.card -->
+        </section>
+        <!-- /.Left col -->
+        <!-- right col (We are only adding the ID to make the widgets sortable)-->
+
+       <!-- Section for body-->
+        <section class="col-lg-5 connectedSortable">
+
+          <!-- Map card -->
+
+          <!-- /.card -->
+
+          <!-- Calendar -->
+
+          <!-- /.card -->
+        </section>
+        <!-- right col -->
+      </div>
+      <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+
+{% endblock content%}

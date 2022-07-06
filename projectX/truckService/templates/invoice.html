@@ -1,0 +1,390 @@
+
+  {% extends 'base.html'%}
+  {% load static %}
+  {% load crispy_forms_tags %}
+  {% block title%}
+  Invoice Page
+  {% endblock title%}
+  {% block content%}
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header" style="padding : 20px">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Generated Invoice</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Invoice</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+          <!-- /Modal -->
+          <div class="modal fade" id="tripsmodal">
+                  <div class="modal-dialog">
+                          <div class="modal-content">
+                                        <div class="modal-header">
+                                              <h4 class="modal-title">Trips Not Found </h4>
+                                              <button type="button" id="closemodal" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                              </button>
+                                        </div>
+                            <div class="modal-body">
+                                  <h3> No record Found on your selected Customer and Dates</h3>
+                            </div>
+                            <!-- /.modal-content -->
+                          </div>
+                        </div>
+            <!-- /.modal-dialog -->
+          </div>
+          <!--/modal-->
+
+              <!-- Main content -->
+              <div style="margin: 20px;"class="invoice p-3 mb-3">
+
+                <!-- title row -->
+                <div style="padding-top: 30px;">
+                <img  src="{% static 'dist/img/logo.jpeg'%}" alt="logo " height="130" width="200">
+                </div>
+                <div style="padding-right : 15px; padding-top: 20px; padding-bottom: 5px; " class="row">
+
+                  <div style="padding-left: 30px" class="col-sm-6">
+                      {% comment %} hidden data fields {% endcomment %}
+                      <input type='hidden' id ='fromDate' value={{fromDate}}>
+                      <input type='hidden' id ='toDate' value={{toDate}}>
+                      <input type='hidden' id ='customer' value={{customer.id}}>
+                      <input type='hidden' id ='csrf' value={{csrf}}>
+
+
+                    <b> TRN No:</b> <span style="font-size:15px">100316897600003/AL Mutamayez Drainage</span>
+
+                  </div>
+                  <div  style="padding-right: 300px" class="col-sm-6 ">
+                    <h2 class="float-right">
+                      INVOICE
+                    </h2>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <div style="padding-right: 288px ">
+                  <h4 style="color: #939496; tab-size:16;" class="float-right">
+                    <tab>#IN/SA-000{{invoiceNo}}
+                  </h4>
+                </div>
+                <div style="padding-top: 20px">
+                <hr  class="bg-danger border-8 border-top ">
+                </div>
+                <!-- info row -->
+                <div style="padding-left: 20px; padding-right: 10px;" class="row invoice-info">
+
+                  <div class="col-sm-6 invoice-col">
+                    <strong> TO: </strong>
+                      {{customer}}<br>
+                      {{location}},UAE<br>
+                      RECORD NO {{record_no}}   <strong>CAR NO  </strong><span id="carNo"></span><br>
+                      <strong>Contact Person:</strong> {{customer}} <br>
+                      
+
+                  </div>
+                  <!-- /.col -->
+
+                  <!-- /.col -->
+                  <div class="col-sm-6 invoice-col text-center">
+                    <strong> Date: </strong>
+                    {{date}}<br>
+                    <strong> Payment Due Date: </strong>
+                    {{date}}<br>
+                    
+                    <strong> Contact No : </strong>{{contactNo}}<br>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+                <!-- Table row -->
+                <div  style="padding-left: 20px; padding-right: 10px; " class="row">
+                  <div class="col-12 table-responsive">
+                    <table id="invoiceTable" class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th>Sr</th>
+                        <th>Item</th>
+                        {% comment %} <th>Pickup Point</th>
+                        <th>Truck No</th>
+                        <th>Driver Name</th> {% endcomment %}
+                        <th>QTY</th>
+                        {% comment %} <th>VAT Amount</th> {% endcomment %}
+                        <th>Rate</th>
+                        <th>Amount</th>
+                      </tr>
+                      </thead>
+                      <tbody >
+                      <tr>
+                        <td>1</td>
+                        <td>Trips from <strong><span id="trip_from">{{fromDate}}<span></strong> to <strong><span id="trip_to">{{toDate}}<span></strong></td>
+                        <td><span id="QTY"></span></td>
+                        <td ><span id="rate">AED {{customer.tripCharges}}.00</span></td>
+
+                        <td><span id="amount"></span></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+
+                      </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+
+
+                <div style="padding-left: 20px; padding-right: 10px;" class="row">
+                  <!-- accepted payments column -->
+                  <div class="col-6">
+
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-6">
+                    <p class="lead">Amount Due {{date}}</p>
+
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr>
+                          <th style="width:50%">Net Total:</th>
+                          <td><span id="netamount"></span></td>
+                        </tr>
+                        <tr>
+                          <th>Discount :</th>
+                          <td>AED 0.00 </td>
+                        </tr>
+                        <tr>
+                          <th>Total VAT Chargable 5.00 %:</th>
+                          <td><span id="taxAmount"></span></td>
+                        </tr>
+                        <tr>
+                          <th>Rounded Total:</th>
+                          <td><span id="roundedTotal"></span></td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+                <div>
+                  {% comment %} <h5><strong>In Words:</strong></h5><h6 id="in_words"></h6> {% endcomment %}
+                  <h6></h6>
+                  <span style="font-size:10.5pt" ><strong>In Words : </strong> <span id="inwords"></span></span>
+                  <h1></h1>
+                </div>
+                <div>
+                  {% comment %} <h5><strong>In Words:</strong></h5><h6 id="in_words"></h6> {% endcomment %}
+                  <h6></h6>
+                  <h4 style="text-align: center;">This is computer generated document and do not require any stamp or/and signature.</h4>
+                  <h1></h1>
+                </div>
+
+                <div style="padding-left: 20px; padding-right: 10px;" class="row">
+                  <h4><strong>For Client</strong></h4>
+                </div>
+                <div style="padding-left: 20px; padding-right: 10px;" class="row">
+                  
+                  <h3>Receiver Name : ___________________________________ Sign : ____________________________________ Date : ____________________________________</h4>
+                </div>
+
+                <div >
+                  <h1></h1>
+                  <h5 style="text-align: center;"><strong>Thank you for your business!</strong></h5>
+                </div>
+
+                <!-- this row will not appear when printing -->
+                <div style="padding-left: 20px;  padding-right: 10px;" class="row no-print">
+                  <div class="col-12">
+                    <a id="print" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+
+
+                  </div>
+                </div>
+              </div>
+              <!-- /.invoice -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+
+
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+  <script>
+    $( document ).ready(function() {
+
+    var a = ['','ONE ','TWO ','THREE ','FOUR ', 'FIVE ','SIX ','SEVEN ','EIGHT ','NINE ','TEN ','ELEVEN ','TWELVE ','THIRTEEN ','FOURTEEN ','FIFTEEN ','SIXTEEN ','SEVENTEEN ','EIGHTEEN ','NINTEEN '];
+    var b = ['', '', 'TWENTY','THIRTY','FORTY','FIFTY', 'SIXTY','SEVENTY','EIGHTY','NINETY'];
+
+    function inWords (num) {
+        if ((num = num.toString()).length > 9) return 'overflow';
+        n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+        if (!n) return; var str = '';
+        str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'CRORE ' : '';
+        str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'LAKH ' : '';
+        str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'THOUSAND ' : '';
+        str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'HUNDRED ' : '';
+        str += (n[5] != 0) ? ((str != '') ? '- ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'DIRHAM & ZERO FILS ONLY' : '';
+        return str;
+    }
+    
+
+    
+    let toDate=$('#toDate').val()
+    let fromDate=$('#fromDate').val()
+    let customer=$('#customer').val()
+    let csrf_token=$('#csrf').val()
+    let trip_charges = '{{ customer.tripCharges }} ' 
+
+    //var dateAr = fromDate.split('-');
+    //var newDate = dateAr[1] + '-' + dateAr[2] + '-' + '20' + dateAr[0].slice(-2);
+
+    //var dateAr1 = toDate.split('-');
+    //var newDate1 = dateAr1[1] + '-' + dateAr1[2] + '-' + '20' + dateAr1[0].slice(-2);
+    var newDate=changeFormate(fromDate)
+    var newDate1=changeFormate(toDate)
+    $("#trip_from").html(newDate)
+    $("#trip_to").html(newDate1)
+
+
+  //const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      $.ajax({
+        type : "POST" ,
+        url :  '/createinvoice/',
+        data: {toDate:toDate,fromDate:fromDate,customer:customer},
+      headers: {'X-CSRFToken': csrf_token},
+    // data : {id:'{{id}}'},
+
+        success: function(response){
+          
+          tripsDetail=response.tripDetails
+          
+          if (tripsDetail.length!=0){
+
+            
+        /*  $("#invoiceTable tbody").empty()
+          tripsDetail.forEach((item, index) => {
+          console.log(item.id)
+          
+            $("#invoiceTable tbody").append(`<tr><td>${index+1}</td>
+            <td>${item.date}</td>
+            <td>${item.pickupPoint}</td>
+            <td>${item.TruckNo}</td>
+            <td >${item.DriverName.user.first_name+" "+item.DriverName.user.last_name }</td>
+            
+            <td>${item.nft}</td>
+            <td>${item.vatAmount}</td>
+            <td>${item.ReceivableAmount}</td>
+          
+            </tr>`)
+          
+          });  */
+          
+
+            //console.log(tripsDetail)
+                let nft=0
+                const set1 = new Set();
+                tripsDetail.forEach((trip, index) => {
+                  // alert(x.username)
+                  nft=nft+trip.nft
+                  //alert(trip.nft)
+                  set1.add(trip.TruckNo)
+
+                  console.log()
+                  });
+
+                  set1.forEach((carNo, index) => {
+
+                  $("#carNo").append(carNo +" ")
+                  });
+
+                  $("#QTY").html(nft+" NOS")
+                  $("#invoiceData").html(nft)
+                  
+                  let total_amount=nft*trip_charges
+                  $("#amount").html("AED "+total_amount)
+                  $("#netamount").html("AED "+total_amount)
+                  let tax=total_amount*0.05
+                  tax=tax.toFixed(2)
+                  tax=Number(tax)
+                  $("#taxAmount").html("AED "+tax )
+                  console.log(":::::ddd:::::::",total_amount)
+                  roundedTotal=Number(total_amount)+Number(tax)
+                  
+                  var words = inWords(roundedTotal)
+                  
+                  $("#inwords").html(words)
+                  $("#roundedTotal").html("AED "+roundedTotal )
+                          let invoice_no = '{{invoiceNo}} '
+                          $.ajax({
+                            type : "POST" ,
+                            url :  '/saveinvoice/',  
+                            data: {customer:customer,payment_amount:roundedTotal,payment_no:invoice_no,tax:tax,tripsAmount:total_amount},
+                            headers: {'X-CSRFToken': csrf_token},
+                        // data : {id:'{{id}}'},
+
+                            success: function(response){
+                              console.log("Invoice Saved to Paments Pending Payments")
+                              $(document).Toasts('create', {
+                                class: 'bg-info',
+                                title: 'Toast Title',
+                                subtitle: 'Subtitle',
+                                body: 'Invoice Saved to Pending Payments',
+                                autohide: true
+                                });
+                                                      }
+                            });
+
+
+
+
+                  //alert(nft)
+                }
+          else{
+
+            //alert("No record Found according to your filter")
+            //window.location.replace("/generateinvoice")
+
+
+            $("#tripsmodal").modal('show');
+
+            $('#tripsmodal').on('hidden.bs.modal', function () {
+              window.location.replace("/generateinvoice")
+            })
+
+
+
+          }
+
+        }
+  });
+
+  });
+
+  $("#print").click(function() {
+    window.addEventListener("load", window.print());
+  })
+
+
+  </script>
+
+  {% endblock content%}

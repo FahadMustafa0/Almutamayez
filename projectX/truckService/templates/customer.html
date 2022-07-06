@@ -1,0 +1,127 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block title%}
+Customer Page
+{% endblock title%}
+{% block content%}
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header" style="padding : 20px">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Customer Details</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Customer{{contect_processor}}</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-7 connectedSortable">
+
+
+            {% comment %} {% if confirm %}
+            <div class="ui green message">Customer Created Successfully!</div>
+            {% endif %} {% endcomment %}
+            <div id="msgdiv"> </div>
+            <form action="" id="foorm" method="POST" class="ui form" enctype='multipart/form-data' >
+
+                {% csrf_token %}
+                {{ form1.as_p }}
+                {{ cform.as_p }}
+                <div id="add_on">  
+
+                </div>
+              <div class="actions">
+                <button type='submit' class="ui teal button">
+                  Create New
+                  {% comment %} <i class="checkmark icon"></i> {% endcomment %}
+                </button>
+                <br><br>
+              </div>
+          </form>
+
+
+
+
+
+        </section>
+
+       <!-- Section for body-->
+        <section class="col-lg-5 connectedSortable">
+
+        </section>
+
+      </div>
+      <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<script>
+  $("#id_managing_by").change(function(e) {
+    console.log($(this).val())
+    $("#add_on").empty()
+    if($(this).val()=="Real_Estate")
+
+   // $("#id_managing_by").append(`<input type="text" id=order_now name=order_now value="" > `)
+    $("#add_on").append(`<div class="col-sm-6"><label for="dropdown">Real Estate Name</label><input  type="text" id=estate_name name=estate_name value="" ><label for="dropdown">Contact Person</label><input  type="text" id=contact_person name=contact_person value="" ><label for="dropdown">Email Adress</label><input style="margin-bottom:20px" type="email" id=email name=email value="" ></div> `)
+  });
+
+    $("#foorm").submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        console.log(formData)
+    $.ajax({
+        type : "POST" ,
+        url :  '/createcustomer/',
+        contentType: false,
+        processData: false,
+        data : formData,
+    // data : {id:'{{id}}'},
+
+
+        success: function(response){
+            console.log(">>>>",response.confirm)
+            if(response.confirm==true){
+           // $("#msgdiv").html('<div class="ui green message">Updated Successfully!</div>')
+             $(document).Toasts('create', {
+              class: 'bg-info',
+              title: 'Toast Title',
+              subtitle: 'Subtitle',
+              body: 'Updated Successfully!',
+              autohide: true
+              });
+            $("#id_first_name").val('')
+            $("#id_last_name").val('')
+            $("#id_location").val('')
+            $("#id_record_number").val('')
+            $("#id_building_number").val('')
+            $("#id_managing_by").val('')
+            $("#id_contact").val('')
+            $("#id_tripCharges").val('')
+            $("#id_Vat").val('')
+            $("#estate_name").val('')
+            $("#contact_person").val('')
+            $("#email").val('')
+
+         }
+        }
+});
+    });
+</script>
+{% endblock content%}

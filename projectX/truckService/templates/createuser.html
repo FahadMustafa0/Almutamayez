@@ -1,0 +1,154 @@
+ {% load static %}
+<!DOCTYPE html>
+ 
+<html lang="en">
+  {% comment %} {% load pwa %}
+  {% progressive_web_app_meta %}
+  <link rel="manifest" href="{% static 'manifest.webmanifest' %} "> {% endcomment %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Truck Service | Create User</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css'%}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css'%}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css'%}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="/"><b>Al Mutamayez </b>Drainage</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      {% if check %}
+      <div class="alert alert-danger" role="alert"> Please enter correct credentials! </div>
+        {% endif %}
+      <p class="login-box-msg">Create New Users</p>
+      <form  id="usercreateform"  class="ui form" enctype='multipart/form-data' >
+        {% csrf_token%}
+        {% comment %} {{ form.as_p }} {% endcomment %}
+        <div  class="input-group mb-3">
+          <input type="email" id="email" name="email" class="form-control" placeholder="Email">
+          <div  class="input-group-append">
+            <div id="emaildiv" class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <select name="role" class="custom-select" id="role">
+            <option id="role1" name="role" value='' selected> Select Role </option>
+            <option id="role2" name="role" value='dataentry' > Data Entry </option>
+            <option id="role3" name="role" value='accounts' > Accounts </option>
+            <!-- select data-->
+           </select>
+        </div>
+
+          <!-- /.col -->
+          <div class="">
+            <button type="submit" id="login" name="login" class="btn btn-primary btn-block">Sign Up</button>
+          </div>
+          <!-- /.col -->
+        </div>
+      </form>
+
+
+  <!-- register and forget password-->
+      {% comment %} <p class="mb-1">
+        <a href="forgot-password.html">I forgot my password</a>
+      </p>
+      <p class="mb-0">
+        <a href="register.html" class="text-center">Register a new membership</a>
+      </p> {% endcomment %}
+
+    </div>
+    <!-- /.login-card-body -->
+  </div>
+</div>
+<!-- My jQuery AJax-->
+<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+ <script>
+
+   
+
+
+</script> 
+<!-- jQuery -->
+
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.min.js'%}"></script>
+</body>
+<script>
+
+
+ 
+
+   $("#usercreateform").submit(function(e){
+        e.preventDefault();
+        var formData = new FormData(this);
+        
+    $.ajax({
+        method : "POST" ,
+        url :  '/create_users/',
+        contentType: false,
+        processData: false,
+        data : formData,
+    // data : {id:'{{id}}'},
+ 
+
+        success: function(response){
+          
+            if(response.message==true){
+           // $("#msgdiv").html('<div class="ui green message">Updated Successfully!</div>')
+             $(document).Toasts('create', {
+              class: 'bg-info',
+              title: 'Toast Title',
+              subtitle: 'Subtitle',
+              body: 'User created succuss fully!',
+              autohide: true
+              });
+              
+            $("#email").val('')
+            $("#password").val('')
+            $("#role").val('')
+            
+         }
+         else if(response.message==false){
+          $(document).Toasts('create', {
+            class: 'bg-info',
+            title: 'Toast Title',
+            subtitle: 'Subtitle',
+            body: "Email Already Exists!",
+            autohide: true
+            });
+            $("#emaildiv").css('background', '#db626e');
+            $("#password").val('')
+            $("#role").val('')
+         }  
+
+        }
+});
+
+   });
+
+    
+
+
+</script>
+</html> 

@@ -1,0 +1,809 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Al Mutamayez Drainage | Dashboard</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css'%}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css'%}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css'%}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{% static 'plugins/jqvmap/jqvmap.min.css'%}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css'%}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css'%}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css'%}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.min.css'%}">
+
+  <!--sementic ui import-->
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+
+  <!-- Fengyuan Chen's Datepicker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+ {% comment %} Jquery validation {% endcomment %}
+ <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+
+
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+
+<div class="wrapper">
+
+
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/index/" class="nav-link">Home</a>
+        <input type="hidden" id="postId" name="postId" value="" disabled>
+<input type="hidden" id="visa_alert" name="visa_alert" value="{{visa_expiry_alert}}" disabled>
+<input type="hidden" id="visa_expire" name="visa_expire" value="{{visa_expired}}" disabled>
+<input type="hidden" id="passport_alert" name="passport_alert" value="{{passport_expiry_alert}}" disabled>
+<input type="hidden" id="passport_expired" name="passport_expired" value="{{passport_expired}}" disabled>
+<input type="hidden" id="truck_alert" name="truck_alert" value="{{truck_expiry_alert}}" disabled>
+<input type="hidden" id="truck_expired" name="truck_expired" value="{{truck_expired}}" disabled>
+
+      </li>
+
+    </ul> 
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+
+
+      {% comment %} adding new users by admin {% endcomment %}
+      {% if allowed %}
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/create_user/" class="nav-link"><button class="ui teal button edit_btn" type="button" style="padding-bottom: 7px;padding-top: 7px;/* margin-bottom: 20px; */">Add User</button></a>
+      </li>
+      {% endif %}
+
+
+
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+
+
+
+
+      <li class="nav-item">
+        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
+          <i class="fas fa-th-large"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="\" class="brand-link">
+      <img src="{% static 'dist/img/logoonly.jpeg'%}" alt="logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light"><font size="3.5">Al Mutamayez Drainage</font></span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% static 'dist/img/admin.jpg'%}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">{{user}}</a>
+        </div>
+      </div>
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item ">
+            <a href="/index/" class="nav-link active">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Dashboard
+
+                <i class="fas fa-angle-left right"></i>
+                <span style="background-color: ##343A40" class="badge badge-info right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/index/" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Dashboard</p>
+
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/tripdata/" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Trip Data</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/manageTripdata/" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Trip Data</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/expenses/" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Expense Data</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/managestaffexpense/" class="nav-link">
+                  <i class="fas fa-arrow-right nav-icon"></i>
+                  <span class="badge badge-info right">5</span>
+                  <p>Manage Expense Data</p>
+                </a>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/managestaffexpense/" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Manage Staff Expense</p>
+                  </a>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/managetruckexpense/" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Manage Truck Expense</p>
+                  </a>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/manageofficeexpense/" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Manage Office Expense</p>
+                  </a>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/manageotherexpense/" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Manage Other Expense</p>
+                  </a>
+              </ul>
+              
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/payments/" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Payments Data</p>
+                </a>
+              </li>
+            </ul>
+            
+          </li>
+
+
+          {% if dataentry %}
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                Customers
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/customer" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Customer</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/customerlist/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Customer</p>
+                </a>
+
+            </ul>
+          </li>
+
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-truck"></i>
+              <p>
+                Trucks
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">3</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/createtruck/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Trucks Detail</p>
+                </a>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/managetrucks/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Trucks</p>
+                </a>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/fuelData/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Fuel Data</p>
+                </a>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-file-invoice"></i>
+              <p>
+                Invoices
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">1</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generateinvoice/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Generate Invoice</p>
+                </a>
+            </ul>
+          </li>
+
+
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-credit-card"></i>
+                <p>
+                  Payments
+                  <i class="fas fa-angle-left right"></i>
+                  <span class="badge badge-info right">4</span>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/allpayments/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Total Payments View</p>
+                </a>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/receivedinvoices/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Received</p>
+                </a>
+            </ul>
+            {% comment %} <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/paidbills/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Paid</p>
+                </a>
+            </ul> {% endcomment %}
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="fas fa-arrow-right nav-icon"></i>
+                  <span class="badge badge-info right">3</span>
+                  <p>Pendings</p>
+                </a>
+
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/pendinginvoices/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p> Invoices</p>
+                    </a>
+                </ul>
+                {% comment %} <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/pendingbills/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p> Bills</p>
+                    </a>
+                </ul> {% endcomment %}
+              </ul>
+              {% comment %} </li> {% endcomment %}
+          </li>
+          {% if allowed %}
+
+          <li class="nav-item">
+            <a href="/income" class="nav-link">
+              <i class="nav-icon fas fa-money-check"></i>
+              <p>
+                Income
+              </p>
+            </a>
+          </li>
+
+          {% endif %}
+        
+
+          <li class="nav-item">
+            <a href="/expenses" class="nav-link">
+              <i class="nav-icon fas fa-money-bill-wave"></i>
+              <p>
+                Expenses
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/expenses/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Expense </p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/managestaffexpense/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Staff Expenses </p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/managetruckexpense/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Truck Expenses </p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/manageofficeexpense/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Office</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/manageotherexpense/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Other Expenses</p>
+                </a>
+
+            </ul>
+            
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/managetotalexpense/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Total Expenses</p>
+                </a>
+
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-map-marked-alt"></i>
+              <p>
+                Discharge Point
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+            {% comment %} <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/createdischargepoint/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add DischargePoint </p>
+                </a>
+
+            </ul>   {% endcomment %}
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/dischargepointlist/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Discharge Points</p>
+                </a>
+
+            </ul>
+
+          </li>
+
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Staff
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/createstaff" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Staff</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/managestaff/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Manage Staff</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="fas fa-arrow-right nav-icon"></i>
+                    <span class="badge badge-info right">2</span>
+                    <p>Deduction</p>
+                  </a>
+
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="/deduction/" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p> Add Deduction</p>
+                      </a>
+                  </ul>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="/managededuction/" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p> Manage Deduction</p>
+                      </a>
+                  </ul>
+                </ul>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        <i class="fas fa-arrow-right nav-icon"></i>
+                        <span class="badge badge-info right">2</span>
+                        <p>Attendance</p>
+                      </a>
+    
+                      <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="/attendance/" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p> Add Attendance</p>
+                          </a>
+                      </ul>
+                      <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="/manageattendance/" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p> Manage Attendance</p>
+                          </a>
+                      </ul>
+                    </ul>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        <i class="fas fa-arrow-right nav-icon"></i>
+                        <span class="badge badge-info right">3</span>
+                        <p>Leaves</p>
+                      </a>
+
+                      <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="/leaves/" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p> Add leaves</p>
+                          </a>
+                      </ul>
+                      <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="/manageleaves/" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p> Manage Leaves</p>
+                          </a>
+                      </ul>
+                    </ul>
+
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-file"></i>
+              <p>
+                Reports
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">6</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/1" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>General Tax & Trips Report</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/2" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Truck Wise Trip Report</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/3" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Customer Wise trip Report</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/4" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Truck Wise Expense Report</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/8" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Truck Wise Fuel</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/9" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Truck Wise Maintenance</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/5" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>All Expense Report </p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/6" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Invoice Report</p>
+                </a>
+
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/generatereport/7" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>DischargePoint Expense</p>
+                </a>
+
+            </ul>
+
+
+          </li>
+
+          {% endif %}
+
+          <li class="nav-item">
+            <a href="/logout/" class="nav-link">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>
+                Logout
+              </p>
+            </a>
+          </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+
+
+  {% block content %}
+  {% endblock content%}
+
+
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2022 <a href="\">Al Mutamayez Drainage</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>Version</b> 1.0
+    </div>
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js'%}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static 'plugins/jquery-ui/jquery-ui.min.js'%}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+<!-- ChartJS -->
+<script src="{% static 'plugins/chart.js/Chart.min.js'%}"></script>
+<!-- Sparkline -->
+<script src="{% static 'plugins/sparklines/sparkline.js'%}"></script>
+<!-- JQVMap -->
+<script src="{% static 'plugins/jqvmap/jquery.vmap.min.js'%}"></script>
+<script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js'%}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static 'plugins/jquery-knob/jquery.knob.min.js'%}"></script>
+<!-- daterangepicker -->
+<script src="{% static 'plugins/moment/moment.min.js'%}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js'%}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js'%}"></script>
+<!-- Summernote -->
+<script src="{% static 'plugins/summernote/summernote-bs4.min.js'%}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js'%}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.js'%}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'dist/js/demo.js'%}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'dist/js/pages/dashboard.js'%}"></script>
+<script >
+  function changeFormate(date){
+    var dateAr1 = date.split('-');
+    var newDate= dateAr1[2] + '-' + dateAr1[1] + '-' + '20' + dateAr1[0].slice(-2);
+    return newDate
+  }
+
+
+  $(document).ready(function(){
+		   
+    let visa1=$("#visa_alert").val()
+    const myArray1 = visa1.split("[")
+    const myArray11 = myArray1[1].split("]")
+    const myArray21 = myArray11[0]
+    let final_array1 = myArray21.split(",")
+
+    let visa2=$("#visa_expire").val()
+    const myArray2 = visa2.split("[")
+    const myArray12 = myArray2[1].split("]")
+    const myArray22 = myArray12[0]
+    let final_array2 = myArray22.split(",")
+
+    let visa3=$("#passport_alert").val()
+    const myArray3 = visa3.split("[")
+    const myArray13 = myArray3[1].split("]")
+    const myArray23 = myArray13[0]
+    let final_array3 = myArray23.split(",")
+
+    let visa4=$("#passport_expired").val()
+    const myArray4 = visa4.split("[")
+    const myArray14 = myArray4[1].split("]")
+    const myArray24 = myArray14[0]
+    let final_array4 = myArray24.split(",")
+
+    let visa5=$("#truck_alert").val()
+    const myArray5 = visa5.split("[")
+    const myArray15 = myArray5[1].split("]")
+    const myArray25 = myArray15[0]
+    let final_array5 = myArray25.split(",")
+
+
+    let visa6=$("#truck_expired").val()
+    const myArray6 = visa6.split("[")
+    const myArray16 = myArray6[1].split("]")
+    const myArray26 = myArray16[0]
+    let final_array6 = myArray26.split(",")
+
+    if (final_array1.length>0 || final_array2.length>0 || final_array3.length>0 || final_array4.length>0 || final_array5.length>0 || final_array6.length>0 ){
+ 
+    $(document).Toasts('create', {
+     class: 'bg-info',
+     title: 'Expiry Alert!  ',
+     subtitle: '  This is to alert you about expiry',
+     body: "<strong><strong><span style='color:#E0FF1E'>Visa of the Staff Listed bellow is going to expire : <br></span> </strong></strong>"+final_array1+"<br><br>"+"<strong><strong><span style='color:#E0FF1E'>Visa of the Staff Listed bellow has been expired : </span> </strong></strong>"+"<br>"+final_array2+"<br><br>"+"<strong><strong><span style='color:#E0FF1E'>Passport of the Staff Listed bellow is going to expire : <br></span> </strong></strong>"+""+final_array3+"<br><br>"+"<strong><strong><span style='color:#E0FF1E'>Passport of the Staff Listed bellow has been expired : <br></span> </strong></strong>"+""+final_array4+"<br><br>"+"<strong><strong><span style='color:#E0FF1E'>Registration of the Trucks Listed bellow is going to expire :  <br></span> </strong></strong>"+""+final_array5+"<br><br>"+"<strong><strong><span style='color:#E0FF1E'>Registration of the Trucks Listed bellow has been expired : <br></span> </strong></strong>"+""+final_array6+"<br>",
+     
+     delay:20000,
+     autohide: true,
+     });
+
+    }
+    
+    
+
+    
+   
+
+
+    //=========================================================================
+
+  });
+
+
+</script>
+
+<!--Newly added by Me-->
+
+
+</body>
+</html>

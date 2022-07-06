@@ -1,0 +1,182 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block title%}
+Expenses Page
+{% endblock title%}
+{% block content%}
+
+<div class="content-wrapper">
+	<!-- Content Header (Page header) -->
+	<div class="content-header" style="padding : 20px">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<h1 class="m-0">Expenses  </h1>
+				</div><!-- /.col -->
+				<div class="col-sm-6">
+	 				<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item"><a href="#">Home</a></li>
+						<li class="breadcrumb-item active">Expenses</li>
+					</ol>
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+		</div><!-- /.container-fluid -->
+	</div>
+	<!-- /.content-header -->
+
+<!--Update_MOdal-->
+
+	<!--/modal-->
+		<!-- Main content -->
+		<section class="content">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Expenses</h3>
+					</div>
+					<!-- /.card-header -->
+					<div id="msgdiv"> </div>
+
+
+					<div class="card-body">
+						<table id="totalexpenseTable" class="table table-bordered table-hover">
+								<thead>
+								<tr>
+
+									<th>Staff Expenses</th>
+									<th>Office Expenses</th>
+									<th>Truck Expenses</th>
+									<th>Other Expenses</th>
+									<th>Dischargepoint Expenses</th>
+									<th>Total Expenses</th>
+
+								</tr>
+								</thead>
+								<tbody id="tblbody">
+ 
+														{% comment %} <tr>...</tr> {% endcomment %}
+												{% comment %} <td id="td1">{{customer.first_name}} {{customer.last_name}}</td>
+												<td id="td2">{{customer.forignUser.location}}</td>
+												<td id="td3">{{customer.forignUser.contact}}</td>
+												<td id="td4"> {{customer.forignUser.tripCharges}}</td>
+												<td id="td5">{{customer.forignUser.Vat}}</td>
+												<td id="td6">-</td>
+												<td id="td7">-</td>
+												<td id="td8">-</td> {% endcomment %}
+												{% comment %} {% for customer in customers %}
+												<tr id='t{{customer.id}}'>
+												<td>{{customer.first_name}} {{customer.last_name}}</td>
+												<td>{{customer.forignUser.location}}</td>
+												<td>{{customer.forignUser.contact}}</td>
+												<td> {{customer.forignUser.tripCharges}}</td>
+												<td>{{customer.forignUser.Vat}}</td>
+												<td>-</td>
+												<td>-</td>
+												<td>-</td>
+												<td> <button id="edit{{customer.id}}" value={{customer.id}} class="ui teal button edit_btn" type="button" data-toggle="modal" data-target="#modal-default" >Edit</button> <button  id="del{{customer.id}}" value={{customer.id}} class="ui red button del_cust_button">Delete</button></td>
+												</tr>
+										{% endfor %} {% endcomment %}
+								</tbody>
+								<tfoot>
+								<tr>
+
+									<th>Staff Expenses</th>
+									<th>Office Expenses</th>
+									<th>Truck Expenses</th>
+									<th>Other Expenses</th>
+									<th>Dischargepoint Expenses</th>
+									<th>Total Expenses</th>
+								</tr>
+								</tfoot>
+							</table>
+
+
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<!-- /.card -->
+			</section>
+			<!-- /.content -->
+</div>
+
+<script>
+
+		function viewpoint(){
+				$.ajax({
+								type : "GET" ,
+								url :  '/totalexpenselistshow/',
+							 // data : {id:'{{id}}'},
+
+
+								success: function(response){
+
+									 // console.log(response.daata)
+									$("#totalexpenseTable tbody").empty()
+										// response.dischargePoints.forEach((item, index) => {
+
+											totalstaffEx=response.staffexpense.totalAmount__sum
+											totalofficeEx=response.officeexpense.totalAmount__sum
+											totaltruckEx=response.truckexpense.totalAmount__sum
+											totalotherEx=response.otherexpense.totalAmount__sum
+											dischargeexpense=response.dischargeexpense.total_discharge_cost__sum
+											
+											totalExpense=response.totalExpense
+
+												$("#totalexpenseTable tbody").append(`<tr><td>${totalstaffEx}</td>
+												<td id="locid">${totalofficeEx} AED</td>
+												<td>${totaltruckEx} AED</td>
+												<td >${totalotherEx} AED</td>
+												<td >${dischargeexpense} AED</td>
+										
+												<td >${totalExpense} AED</td>
+
+										</tr>`)
+
+												/*$("#td1").append(item.user.first_name)
+												//$("#td").html(item.user.first_name)
+												$("#td2").append(item.location)
+												$("#td3").append(item.contact)
+												$("#td4").append(item.tripCharges)
+												$("#td5").append(item.Vat)  */
+											//});
+								}
+
+							});
+					}
+		 $(document).ready(function(){
+
+
+					 viewpoint();
+
+					 //=========================================================================
+
+		 });
+
+
+	/*  $("#updateForm").submit(function(e){
+				e.preventDefault();
+				var formData = new FormData(this);
+				console.log("check")
+				var val = $("#edit_btn").val();
+				console.log(formData)
+				$.ajax({
+						type : "POST" ,
+						url :  '/updatecustomer/'+val.toString()+'/',
+						contentType: false,
+						processData: false,
+						data : formData,
+						//headers: {'X-CSRFToken': csrftoken},
+					 // headers: {"Authorization": localStorage.getItem('token')}
+
+						success: function(response){
+								alert("good")
+						}
+				});
+		}); */
+
+
+	 //$(".edit_btn").click(function(){
+
+		</script>
+
+
+{% endblock content%}

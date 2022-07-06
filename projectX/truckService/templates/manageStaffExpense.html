@@ -1,0 +1,805 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block title%} 
+Staff Expense Page
+{% endblock title%}
+{% block content%}
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header" style="padding : 20px">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Manage Staff Expense  </h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Manage Staff Expense </li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+<!--Update_MOdal-->
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Update Staff Expense </h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form action="" value="" id="updateForm" method="POST" class="ui form" enctype='multipart/form-data' >
+
+                {% csrf_token %}
+                <label for="date">Date</label>
+                <input type='text' id="date" name="date">
+                <label for="id_location">Staff:</label>
+                <div class="input-group mb-3">
+                    <select name="staff" class="custom-select" id="dropdown">
+
+                     <!-- select data-->
+                    </select>
+                  </div>
+                {% comment %} <input type='text' id="location" name="location" value=""> {% endcomment %}
+                <label for="Cost">Salary:</label>
+                <input type='text' id="salary" name="salary" value="">
+                <label for="salary_paid_by">Mode of Payment:</label>
+                <input type='text' id="salary_paid_by" name="salary_paid_by" value="" readonly>
+                {% comment %} <div class="input-group mb-3">
+                    <select name="salary_paid_by" class="custom-select" id="salary_paid">
+
+                     <!-- select data-->
+                    </select>
+                  </div> {% endcomment %}
+                
+
+                <label for="exchange">Exchange Amount:</label>
+                <input type='text' id="exchange" name="exchange" value="" readonly>
+                <label for="by_hand">By Hand Amount:</label>
+                <input type='text' id="by_hand" name="by_hand" value="" readonly>
+                <label for="visaFee">Visa Fee:</label>
+                <input type='text' id="visaFee" name="visaFee" value="">
+                <label for="eidFee">Eid Fee:</label>
+                <input type='text' id="eidFee" name="eidFee" value="">
+                <label for="medicalIns">Medical Ins:</label>
+                <input type='text' id="medicalIns" name="medicalIns" value="">
+                <label for="overTime">Over Time:</label>
+                <input type='text' id="overTime" name="overTime" value="">
+                <label for="others">Others:</label>
+                <input type='text' id="others" name="others" value="">
+                <label for="deduction">Decduction :</label>
+                <input type='text' id="deduction" name="deduction" value="">
+                <label for="remaining_salary">Remaining Salary :</label>
+                <input type='text' id="remaining_salary" name="remaining_salary" value="" readonly>
+                <label for="vat">VAT Amount:</label>
+                <input type='text' id="vat" name="vat" value="">
+                <label for="receipt_no">Receipt No:</label>
+                <input type='text' id="receipt_no" name="receipt_no" value="">
+
+                <label for="paid_by">Paid By:</label>
+                <div class="input-group mb-3">
+                    <select name="paid_by" class="custom-select" id="dropdown2">
+
+                     <!-- select data-->
+                    </select>
+                  </div>
+
+                <input type="hidden" id="postId" name="postId" value="" disabled>
+
+                {% comment %} {{form1.as_table}}
+                {{ cform.as_table }} {% endcomment %}
+
+ 
+
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type='submit' id="update"  class="ui teal button">Update{% comment %} <i class="checkmark icon"></i> {% endcomment %}</button>
+        </div>
+    </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!--/modal-->
+    <!-- Main content -->
+    <section class="content">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Staff Expense Records</h3>
+          </div>
+          <!-- /.card-header -->
+          <div id="msgdiv"> </div>
+
+
+          <div class="card-body">
+            <table id="staffexpenseTable" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Staff</th>
+                  <th>Salary</th>
+                  <th>Mode of Payment</th>
+                  <th>Exchange Amount</th>
+                  <th>By Hand Amount</th>
+                  <th>Visa Fee</th>
+                  <th>Eid Fee</th>
+                  <th>Medical Insurance</th>
+                  <th>Over Time</th>
+                  <th>Others </th>
+                  <th>Deduction </th>
+                  <th>Remaining Salary </th>
+                  <th>VAT Amount</th>
+                  <th>Paid By</th>
+                  <th>Receipt No</th>
+                  <th>Total Amount</th>
+                  <th>Operations</th>
+                </tr>
+                </thead>
+                <tbody id="tblbody">
+
+                            {% comment %} <tr>...</tr> {% endcomment %}
+                        {% comment %} <td id="td1">{{customer.first_name}} {{customer.last_name}}</td>
+                        <td id="td2">{{customer.forignUser.location}}</td>
+                        <td id="td3">{{customer.forignUser.contact}}</td>
+                        <td id="td4"> {{customer.forignUser.tripCharges}}</td>
+                        <td id="td5">{{customer.forignUser.Vat}}</td>
+                        <td id="td6">-</td>
+                        <td id="td7">-</td>
+                        <td id="td8">-</td> {% endcomment %}
+                        {% comment %} {% for customer in customers %}
+                        <tr id='t{{customer.id}}'>
+                        <td>{{customer.first_name}} {{customer.last_name}}</td>
+                        <td>{{customer.forignUser.location}}</td>
+                        <td>{{customer.forignUser.contact}}</td>
+                        <td> {{customer.forignUser.tripCharges}}</td>
+                        <td>{{customer.forignUser.Vat}}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td> <button id="edit{{customer.id}}" value={{customer.id}} class="ui teal button edit_btn" type="button" data-toggle="modal" data-target="#modal-default" >Edit</button> <button  id="del{{customer.id}}" value={{customer.id}} class="ui red button del_cust_button">Delete</button></td>
+                        </tr>
+                    {% endfor %} {% endcomment %}
+                </tbody>
+                <tfoot>
+                <tr>
+                  <th>Date</th>
+                  <th>Staff</th>
+                  <th>Salary</th>
+                  <th>Mode of Payment</th>
+                  <th>Exchange Amount</th>
+                  <th>By Hand Amount</th>
+                  <th>Visa Fee</th>
+                  <th>Eid Fee</th>
+                  <th>Medical Insurance</th>
+                  <th>Over Time</th> 
+                  <th>Others </th>
+                  <th>Deduction </th>
+                  <th>Remaining Salary </th>
+                  <th>VAT Amount</th>
+                  <th>Paid By</th>
+                  <th>Receipt No</th>
+                  <th>Total Amount</th>
+                  <th>Operations</th>
+                </tr>
+                </tfoot>
+              </table>
+ 
+
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </section>
+      <!-- /.content -->
+</div>
+<style type="text/css">
+
+  /* datepicker css */
+
+    .ui-datepicker {
+        text-align: center;
+        background-color: #ffff;
+    }
+
+    .ui-datepicker-trigger {
+        margin: 0 0 0 5px;
+        vertical-align: text-top;
+    }
+
+    .ui-datepicker {
+        font-family: Open Sans, Arial, sans-serif;
+        margin-top: 2px;
+        padding: 0 !important;
+        border-color: #c9f0f5 !important;
+    }
+
+    .ui-datepicker {
+        width: 256px;
+    }
+
+    .openemr-calendar .ui-datepicker {
+        width: 191px;
+    }
+
+    .ui-datepicker table {
+        width: 256px;
+        table-layout: fixed;
+    }
+
+    .openemr-calendar .ui-datepicker table {
+        width: 191px;
+        table-layout: fixed;
+    }
+
+    .ui-datepicker-header {
+        background-color: #3e9aba !important;
+        background-image: none !important;
+        border-radius: 0;
+    }
+
+    .openemr-calendar .ui-datepicker-header {
+        background-color: #e6f7f9 !important;
+        border-width: 1px;
+        border-color: #c9f0f5;
+        border-style: solid;
+    }
+
+    .ui-datepicker-title {
+        line-height: 35px !important;
+        margin: 0 10px !important;
+    }
+
+    .openemr-calendar .ui-datepicker-title {
+        line-height: 20px !important;
+    }
+
+    .ui-datepicker-prev span {
+        display: none !important;
+    }
+
+    .ui-datepicker-next {
+        text-align: center;
+    }
+
+    .ui-datepicker-next span {
+        display: none !important;
+    }
+
+    .ui-datepicker-prev {
+        background-color: transparent !important;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAMCAYAAACulacQAAAAUklEQVQYlXWPwQnAMAwDj9IBOlpH8CjdJLNksuujFIJjC/w6WUioFBcqJ7sGEAD5Y/hpqLRghRv4YQlUjqXI3Kql2MixraGbEhVcDXcFUR/1egEHNuTBpFW0NgAAAABJRU5ErkJggg==') !important;
+        height: 12px !important;
+        width: 7px !important;
+        margin: 14px 12px;
+        display: inline-block;
+        left: 0 !important;
+        top: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-prev {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAOCAYAAAD9lDaoAAAAuUlEQVQokXXRsUtCYRAA8J8pDQ1CVIgIgtBU2NDiZIuDS4uLf6WDS1O0tLREEE8icBNKS3lTs8/B78XHw3dwcHA/juOuqjzucYJVrQQMcYctvo4OgEFIeMK6iPphCjzjEWLUC3vACx7yRo5uMUIFr5gii1EL41AvMIkBVPGH04DrSLEsIvjEOZq4wi9+iijDR0ANXOMbmxjlcIY2LtANO6YxymGCDs5wg/ciYv+KBJeY4+2A+Y9j4Y47RtUkrNXeDxUAAAAASUVORK5CYII=') !important;
+        height: 14px !important;
+        width: 9px !important;
+        margin: 5px !important;
+    }
+
+    .ui-datepicker-next {
+        cursor: pointer;
+    }
+
+    .ui-datepicker-prev {
+        cursor: pointer;
+    }
+
+    .ui-datepicker-next {
+        background-color: transparent !important;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAMCAYAAABfnvydAAAAVUlEQVQYlXWQ0Q3AIAhEL07gKI7kKN2kI3Wk1w9to3KQEELucQEECOizhhTQGHFnwOdgobWx0GkZILfYBhXl0STVbPoBarbkL7ozN/F8VBBXh8uJgF5r2hrI4GHUkAAAAABJRU5ErkJggg==') !important;
+        height: 12px !important;
+        width: 8px !important;
+        margin: 14px 12px;
+        display: inline-block;
+        right: 0 !important;
+        top: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-next {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAOCAYAAAASVl2WAAAAtElEQVQYlXXQsUpCcRQH4I97EQyHa1pgIEE0hBGYL+BjNLRFjxXh4rM4F21BS4S4FAgqQioOngt/RM/6+zi/w4EanlA4MDkecYsO3vG/D8a4Rx03eMMqBQt8oodTXAdalwBm+IpNDVxG3aYEMMU3ujjDBT5SAH9R2cE58mwPFOgneJSCGp7RjLoXTEtQjbCFOV7xCxkqdp9sYxnhpFyb4QFXdh8c4Cc9Ko++OwzjFwfn5FiwBVeuI/K2UCkSAAAAAElFTkSuQmCC') !important;
+        height: 14px !important;
+        width: 8px !important;
+        margin: 5px;
+    }
+
+    .ui-datepicker-month {
+        border-radius: 2px;
+        background-color: #3985a0;
+        width: 110px !important;
+        height: 22px;
+        font-family: Open Sans !important;
+        color: #fff;
+        font-size: 14px !important;
+        font-weight: 600;
+        text-align: left;
+        border: none !important;
+        margin-right: 17px !important;
+        vertical-align: text-top;
+    }
+
+    .openemr-calendar .ui-datepicker-month {
+        font-family: Open Sans, Arial, sans-serif;
+        color: rgba(34, 34, 34, 0.87);
+        font-size: 12px !important;
+        font-weight: 700;
+        text-align: center;
+        transform: scaleX(1.0029)
+    }
+
+    .ui-datepicker-year {
+        border-radius: 2px;
+        background-color: #3985a0;
+        width: 61px !important;
+        height: 22px;
+        border: none !important;
+        font-family: Open Sans !important;
+        color: #fff;
+        font-size: 14px !important;
+        font-weight: 600;
+        text-align: left;
+        vertical-align: text-top;
+    }
+
+    .openemr-calendar .ui-datepicker-year {
+        font-family: Open Sans, Arial, sans-serif;
+        color: rgba(34, 34, 34, 0.87);
+        font-size: 12px !important;
+        font-weight: 700;
+        text-align: center;
+        transform: scaleX(1.0029)
+    }
+
+    .ui-datepicker-month option,
+    .ui-datepicker-year option {
+        color: #3985a0 !important;
+        background-color: #fff !important;
+        font-family: Open Sans !important;
+        font-size: 14px !important;
+        font-weight: 600;
+    }
+
+    .ui-datepicker-month option[selected],
+    .ui-datepicker-year option[selected] {
+        background-color: #e5edf0 !important;
+    }
+
+    .ui-datepicker .ui-state-hover {
+        /*background: none !important;*/
+        border: 0 !important;
+    }
+
+    .ui-datepicker td {
+        vertical-align: top;
+    }
+
+    .ui-datepicker .ui-state-default {
+        border-radius: 2px;
+        border-color: #edebeb !important;
+    /*     background: white !important; */
+        width: 24px;
+        height: 24px;
+        padding: 0 !important;
+        line-height: 24px;
+        text-align: center !important;
+        font-family: Open Sans, Arial, sans-serif;
+        color: #707070;
+        font-size: 13px;
+        font-weight: 400 !important;
+        margin: 7px 0 0 4px;
+    }
+
+    .ui-datepicker .ui-state-default.ui-state-highlight{
+        border-color: #dcdcdc;
+        background-color: #cff3f8 !important;
+        color: #3e9aba !important;
+    }
+
+    .openemr-calendar .ui-state-default {
+        font-size: 10px;
+        margin: 0;
+    }
+
+    .ui-datepicker td {
+        width: 33px;
+    }
+
+    .openemr-calendar .ui-datepicker td {
+        width: 26px;
+    }
+
+    .openemr-calendar .ui-state-default {
+        width: 26px;
+        height: 20px;
+        line-height: 20px;
+    }
+    .ui-state-default.ui-state-hover {
+        border-color: #dcdcdc;
+        background-color: #cff3f8 !important;
+    }
+
+    .ui-datepicker .ui-state-active {
+        border-color: #dcdcdc;
+        background-color: #cff3f8 !important;
+        color: #3e9aba !important;
+    }
+
+    .ui-datepicker-calendar thead tr th {
+        font-family: Open Sans, Arial, sans-serif;
+        color: #549fa8;
+        font-size: 12px;
+        font-weight: 400;
+        padding: 0.45em 0.3em !important;
+        /*   width: 15px !important; */
+    }
+
+    .openemr-calendar .ui-datepicker-calendar thead tr th {
+        font-size: 10px;
+    }
+
+    .ui-datepicker-close {
+        display: none;
+    }
+
+    .ui-datepicker thead {
+        background-color: #f5f5f5;
+    }
+
+    .openemr-calendar .ui-datepicker thead {
+        background: none;
+    }
+
+    .ui-state-default.ui-datepicker-current {
+        float: none !important;
+        font-family: Open Sans, Arial, sans-serif;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 400;
+        text-align: left;
+        border-width: 0 !important;
+        border: none;
+        vertical-align: top;
+        margin: 0 !important;
+        background-color: transparent !important;
+    }
+
+    .ui-datepicker-buttonpane.ui-widget-content {
+        text-align: center;
+        background-color: #3e9aba;
+        margin: 0 !important;
+        height: 28px;
+        padding: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-year {
+        background-color: transparent;
+    }
+
+    .openemr-calendar .ui-datepicker-month {
+        background-color: transparent;
+    }
+
+    .openemr-calendar .ui-state-default {
+        border: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-month {
+        margin-right: 10px !important;
+    }
+
+</style>
+
+<script>
+  $(function () {
+    $("#date").prop("autocomplete", "off")
+    $("#date").datepicker({ dateFormat: 'yy-mm-dd' });
+
+    $("#totalAmount").prop("readonly", "true")
+  });
+  $("#salary").keyup(function(e) {
+    sal=$(this).val()
+    $("#remaining_salary").prop("value",sal)
+});
+
+  $("#deduction").keyup(function(e) {
+    deduction=$(this).val()
+    salary=$("#salary").val()
+    Remaining=salary-deduction
+    
+    $("#remaining_salary").prop("value",Remaining)
+});
+    function viewpoint(){
+        $.ajax({
+                type : "GET" ,
+                url :  '/staffexpenselistshow/',
+               // data : {id:'{{id}}'},
+
+
+                success: function(response){
+
+                   // console.log(response.daata)
+                  $("#staffexpenseTable tbody").empty()
+                     response.staffexpenses.forEach((item, index) => {
+                        var date=changeFormate(item.date)
+                      console.log(item)
+                        $("#staffexpenseTable tbody").append(`<tr><td>${date}</td>
+                        <td id="locid">${item.staff.user.first_name+" "+item.staff.user.last_name}</td>
+                        <td>${item.salary}</td>
+                        <td>${item.salary_paid_by}</td>
+                        <td>${item.exchange}</td>
+                        <td>${item.by_hand}</td>
+                        <td >${item.visaFee}</td>
+                        <td>${item.eidFee}</td>
+                        <td >${item.medicalIns}</td>
+                        <td >${item.overTime}</td>
+                        <td>${item.others}</td>
+                        <td>${item.deduction}</td>
+                        <td>${item.remaining_salary}</td>
+                        <td>${item.vat}</td>
+                        <td>${item.paid_by.user.first_name+" "+item.paid_by.user.last_name}</td>
+                        {% comment %} <td>${item.paid_by.user.first_name+" "+item.paid_by.user.last_name}</td> {% endcomment %}
+                        <td>${item.receipt_no}</td>
+                        <td >${item.totalAmount}</td>
+                        <td> <button id="edit${item.id}" value="${item.id}" onclick="editFunction(${item.id})"  class="ui teal button edit_btn" type="button" data-toggle="modal" data-target="#modal-default" >Edit</button> <button  id="del${item.id}" onclick="deleteFunction(${item.id})"  class="ui red button del_cust_button">Delete</button></td>
+                    </tr>`)
+
+                        /*$("#td1").append(item.user.first_name)
+                        //$("#td").html(item.user.first_name)
+                        $("#td2").append(item.location)
+                        $("#td3").append(item.contact)
+                        $("#td4").append(item.tripCharges)
+                        $("#td5").append(item.Vat)  */
+                      });
+                }
+
+              });
+          }
+     $(document).ready(function(){
+
+
+           viewpoint();
+
+           //=========================================================================
+
+     });
+
+
+  /*  $("#updateForm").submit(function(e){
+        e.preventDefault();
+        var formData = new FormData(this);
+        console.log("check")
+        var val = $("#edit_btn").val();
+        console.log(formData)
+        $.ajax({
+            type : "POST" ,
+            url :  '/updatecustomer/'+val.toString()+'/',
+            contentType: false,
+            processData: false,
+            data : formData,
+            //headers: {'X-CSRFToken': csrftoken},
+           // headers: {"Authorization": localStorage.getItem('token')}
+
+            success: function(response){
+                alert("good")
+            }
+        });
+    }); */
+
+
+   //$(".edit_btn").click(function(){
+       function editFunction(arg){
+        console.log(arg)
+        let val = arg
+
+       // const csrftoken = Cookies.get('csrftoken');
+       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+       $("#postId").attr("value",val)
+        $.ajax({
+                type : "POST" ,
+                url :  '/staffexpenselistshow/',
+                data : {id: val},
+                headers: {'X-CSRFToken': csrftoken},
+               // headers: {"Authorization": localStorage.getItem('token')}
+
+                success: function(response){
+
+                   //var customerobj =response.specificCustomer
+                   let staffexpenses=response.staffexpenses
+
+                   let staffNames=response.staffNames
+                   
+                        $("#dropdown").empty()
+                        $("#dropdown1").empty()
+                        $("#dropdown2").empty()
+                       // $("#salary_paid").empty()
+                        $("#date").prop("value",staffexpenses.date)
+                        $("#salary").prop("value",staffexpenses.salary)
+                        $("#exchange").prop("value",staffexpenses.exchange)
+                        $("#by_hand").prop("value",staffexpenses.by_hand)
+                        $("#salary_paid_by").prop("value",staffexpenses.salary_paid_by)
+                        $("#visaFee").prop("value",staffexpenses.visaFee)
+                        $("#eidFee").prop("value",staffexpenses.eidFee)
+                        $("#medicalIns").prop("value",staffexpenses.medicalIns)
+                        $("#overTime").prop("value",staffexpenses.overTime)
+                        $("#others").prop("value",staffexpenses.others)
+                        $("#deduction").prop("value",staffexpenses.deduction)
+                        $("#remaining_salary").prop("value",staffexpenses.remaining_salary)
+                        $("#vat").prop("value",staffexpenses.vat)
+                       // $("#paid_by").prop("value",staffexpenses.paid_by.user.first_name+" "+staffexpenses.paid_by.user.last_name)
+                        $("#receipt_no").prop("value",staffexpenses.receipt_no)
+                        $("#totalAmount").prop("value",staffexpenses.totalAmount)
+                   //$("#dropdown").html( `<option id="defaultOption" name="location" value='${staffexpenses.location}' selected>${staffexpenses.location}</option>`)
+                    // drop down without the loacation of slected customer
+                            staffNames.forEach((staffitem, index) => {
+                                // alert(x.username)
+                                if(staffitem.id!=staffexpenses.staff){
+                                $("#dropdown").append(`<option id="dropdown1" name="location" value='${staffitem.id}' >${staffitem.user.first_name+" "+staffitem.user.last_name}</option>`)
+                                }else{
+                                    $("#dropdown").append( `<option id="defaultOption" name="location" value='${staffexpenses.staff}' selected>${staffitem.user.first_name+" "+staffitem.user.last_name}</option>`)
+
+                                }
+                                });//end foreach
+                                
+                                staffNames.forEach((staffitem, index) => {
+                                    // alert(x.username)
+                                    if(staffitem.id!=staffexpenses.paid_by.id){
+                                    $("#dropdown2").append(`<option id="dropdown1" name="location" value='${staffitem.id}' >${staffitem.user.first_name+" "+staffitem.user.last_name}</option>`)
+                                    }else{
+                                        $("#dropdown2").append( `<option id="defaultOption" name="location" value='${staffexpenses.paid_by.id}' selected>${staffitem.user.first_name+" "+staffitem.user.last_name}</option>`)
+    
+                                    }
+                                    });
+
+                                /*
+                                $("#salary_paid").html( `<option id="defaultOption" name="salary_paid" value='${staffexpenses.salary_paid_by}' selected>${staffexpenses.salary_paid_by}</option>`)
+                                $("#salary_paid").append(`<option id="salary_paid" name="salary_paid" value='Al Ansari' >Al Ansari</option>`)
+                                $("#salary_paid").append(`<option id="salary_paid" name="salary_paid" value='By Hand' >By Hand</option>`)
+                            
+                                */
+                  /*for(location in response.locations){
+                   $("#dropdown1").html(location)
+                        }*/
+
+
+                 //$("#t"+val).remove()
+
+
+
+
+
+
+
+
+                }//end success
+              });//ajax end
+
+
+      //});
+    }// view function end
+    //});
+
+    $("#updateForm").submit(function(e){
+        e.preventDefault();
+        $("#modal-default").modal('hide');
+        $(".modal-backdrop").modal('hide');
+        var formData = new FormData(this);
+
+
+        //var delay=30;
+        var g =  $("#postId").val()
+       // var g=$(".edit_btn").val()
+
+        $.ajax({
+                    type : "POST" ,
+                    url :  '/updatestaffexpense/'+g.toString()+'/',
+                    contentType: false,
+                    processData: false,
+                    data : formData,
+                    //headers: {'X-CSRFToken': csrftoken},
+                // headers: {"Authorization": localStorage.getItem('token')}
+
+                    success: function(response){
+
+                        viewpoint()
+
+                        /* setTimeout(function() {
+                            window.location.replace("/customerlist/")
+                        }, delay); */
+
+                        //window.location.replace("/customerlist/")
+                        if(response.updatecheck==true){
+                                $(document).Toasts('create', {
+                                class: 'bg-info',
+                                title: 'Toast Title',
+                                subtitle: 'Subtitle',
+                                body: 'Updated Successfully!',
+                                autohide: true
+                                });
+                                //delay=1000
+                                //$("#toastsContainerTopRight").toast("hide");
+
+                            //$("#msgdiv").html('<div class="ui green message">Updated Successfully!</div>')
+                             $(document).Toasts('create', {
+              class: 'bg-info',
+              title: 'Toast Title',
+              subtitle: 'Subtitle',
+              body: 'Updated Successfully!',
+              autohide: true
+              });
+                        }//end if ststmenet
+
+
+
+
+                    }//end success
+            });//end ajax
+});// end update form
+
+
+
+
+
+
+    //$(".del_cust_button").click(function(){
+        function deleteFunction(param){
+        var val = param
+        console.log(val)
+        $.ajax({
+                type : "GET" ,
+                url :  '/deletestaffexpence/',
+                data : {id: val},
+               // headers: {"Authorization": localStorage.getItem('token')}
+
+                success: function(response){
+                   
+                    if(response.allowed==true){
+                       $(document).Toasts('create', {
+                           class: 'bg-info',
+                           title: 'Toast Title',
+                           subtitle: 'Subtitle',
+                           body: 'Sorry You are not Allowed | Admin Rights',
+                           autohide: true
+                           });
+   
+   
+                    }
+                    else if(response.confirm==true){
+                       $(document).Toasts('create', {
+                       class: 'bg-info',
+                       title: 'Toast Title',
+                       subtitle: 'Subtitle',
+                       body: 'Deleted Successfully!',
+                       autohide: true
+                       });
+                       //delay=1000
+                       //$("#toastsContainerTopRight").toast("hide");
+               }
+                       
+                    viewpoint()
+                    
+                   }
+              });
+
+
+      //});
+            }
+   // });
+    </script>
+
+
+{% endblock content%}

@@ -1,0 +1,621 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block title%}
+Payments Page
+{% endblock title%}
+{% block content%}
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header" style="padding : 20px">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Payments</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Payments</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-7 connectedSortable">
+
+
+            {% comment %} {% if confirm %}
+            <div class="ui green message">Customer Created Successfully!</div>
+            {% endif %} {% endcomment %}
+            <div id="msgdiv"> </div>
+            <div class="input-group mb-3" style="width: 300px; padding-left : 11px">
+                <label for="dropdown">Choose Payment Type</label>
+                <div class="input-group mb-3"  >
+                <select name="dropdown" class="custom-select " id="expensedropdown">
+                    <option class="opt" value="1">--------</option>
+                    <option class="opt" value="2">Invoice Payment</option>
+                    {% comment %} <option class="opt" value="3">Bill Payment</option> {% endcomment %}
+
+                </select>
+              </div>
+            </div>
+            <br>
+            <div  style=" padding-left : 11px">
+            <form action="" id="foorm" method="POST" class="ui form" enctype='multipart/form-data' >
+
+
+
+                <br><br>
+              </div>
+          </form>
+        </div>
+
+
+
+
+        </section>
+
+       <!-- Section for body-->
+        <section class="col-lg-5 connectedSortable">
+
+        </section>
+
+      </div>
+      <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<style type="text/css">
+
+  /* datepicker css */
+
+    .ui-datepicker {
+        text-align: center;
+        background-color: #ffff;
+    }
+
+    .ui-datepicker-trigger {
+        margin: 0 0 0 5px;
+        vertical-align: text-top;
+    }
+
+    .ui-datepicker {
+        font-family: Open Sans, Arial, sans-serif;
+        margin-top: 2px;
+        padding: 0 !important;
+        border-color: #c9f0f5 !important;
+    }
+
+    .ui-datepicker {
+        width: 256px;
+    }
+
+    .openemr-calendar .ui-datepicker {
+        width: 191px;
+    }
+
+    .ui-datepicker table {
+        width: 256px;
+        table-layout: fixed;
+    }
+
+    .openemr-calendar .ui-datepicker table {
+        width: 191px;
+        table-layout: fixed;
+    }
+
+    .ui-datepicker-header {
+        background-color: #3e9aba !important;
+        background-image: none !important;
+        border-radius: 0;
+    }
+
+    .openemr-calendar .ui-datepicker-header {
+        background-color: #e6f7f9 !important;
+        border-width: 1px;
+        border-color: #c9f0f5;
+        border-style: solid;
+    }
+
+    .ui-datepicker-title {
+        line-height: 35px !important;
+        margin: 0 10px !important;
+    }
+
+    .openemr-calendar .ui-datepicker-title {
+        line-height: 20px !important;
+    }
+
+    .ui-datepicker-prev span {
+        display: none !important;
+    }
+
+    .ui-datepicker-next {
+        text-align: center;
+    }
+
+    .ui-datepicker-next span {
+        display: none !important;
+    }
+
+    .ui-datepicker-prev {
+        background-color: transparent !important;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAMCAYAAACulacQAAAAUklEQVQYlXWPwQnAMAwDj9IBOlpH8CjdJLNksuujFIJjC/w6WUioFBcqJ7sGEAD5Y/hpqLRghRv4YQlUjqXI3Kql2MixraGbEhVcDXcFUR/1egEHNuTBpFW0NgAAAABJRU5ErkJggg==') !important;
+        height: 12px !important;
+        width: 7px !important;
+        margin: 14px 12px;
+        display: inline-block;
+        left: 0 !important;
+        top: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-prev {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAOCAYAAAD9lDaoAAAAuUlEQVQokXXRsUtCYRAA8J8pDQ1CVIgIgtBU2NDiZIuDS4uLf6WDS1O0tLREEE8icBNKS3lTs8/B78XHw3dwcHA/juOuqjzucYJVrQQMcYctvo4OgEFIeMK6iPphCjzjEWLUC3vACx7yRo5uMUIFr5gii1EL41AvMIkBVPGH04DrSLEsIvjEOZq4wi9+iijDR0ANXOMbmxjlcIY2LtANO6YxymGCDs5wg/ciYv+KBJeY4+2A+Y9j4Y47RtUkrNXeDxUAAAAASUVORK5CYII=') !important;
+        height: 14px !important;
+        width: 9px !important;
+        margin: 5px !important;
+    }
+
+    .ui-datepicker-next {
+        cursor: pointer;
+    }
+
+    .ui-datepicker-prev {
+        cursor: pointer;
+    }
+
+    .ui-datepicker-next {
+        background-color: transparent !important;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAMCAYAAABfnvydAAAAVUlEQVQYlXWQ0Q3AIAhEL07gKI7kKN2kI3Wk1w9to3KQEELucQEECOizhhTQGHFnwOdgobWx0GkZILfYBhXl0STVbPoBarbkL7ozN/F8VBBXh8uJgF5r2hrI4GHUkAAAAABJRU5ErkJggg==') !important;
+        height: 12px !important;
+        width: 8px !important;
+        margin: 14px 12px;
+        display: inline-block;
+        right: 0 !important;
+        top: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-next {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAOCAYAAAASVl2WAAAAtElEQVQYlXXQsUpCcRQH4I97EQyHa1pgIEE0hBGYL+BjNLRFjxXh4rM4F21BS4S4FAgqQioOngt/RM/6+zi/w4EanlA4MDkecYsO3vG/D8a4Rx03eMMqBQt8oodTXAdalwBm+IpNDVxG3aYEMMU3ujjDBT5SAH9R2cE58mwPFOgneJSCGp7RjLoXTEtQjbCFOV7xCxkqdp9sYxnhpFyb4QFXdh8c4Cc9Ko++OwzjFwfn5FiwBVeuI/K2UCkSAAAAAElFTkSuQmCC') !important;
+        height: 14px !important;
+        width: 8px !important;
+        margin: 5px;
+    }
+
+    .ui-datepicker-month {
+        border-radius: 2px;
+        background-color: #3985a0;
+        width: 110px !important;
+        height: 22px;
+        font-family: Open Sans !important;
+        color: #fff;
+        font-size: 14px !important;
+        font-weight: 600;
+        text-align: left;
+        border: none !important;
+        margin-right: 17px !important;
+        vertical-align: text-top;
+    }
+
+    .openemr-calendar .ui-datepicker-month {
+        font-family: Open Sans, Arial, sans-serif;
+        color: rgba(34, 34, 34, 0.87);
+        font-size: 12px !important;
+        font-weight: 700;
+        text-align: center;
+        transform: scaleX(1.0029)
+    }
+
+    .ui-datepicker-year {
+        border-radius: 2px;
+        background-color: #3985a0;
+        width: 61px !important;
+        height: 22px;
+        border: none !important;
+        font-family: Open Sans !important;
+        color: #fff;
+        font-size: 14px !important;
+        font-weight: 600;
+        text-align: left;
+        vertical-align: text-top;
+    }
+
+    .openemr-calendar .ui-datepicker-year {
+        font-family: Open Sans, Arial, sans-serif;
+        color: rgba(34, 34, 34, 0.87);
+        font-size: 12px !important;
+        font-weight: 700;
+        text-align: center;
+        transform: scaleX(1.0029)
+    }
+
+    .ui-datepicker-month option,
+    .ui-datepicker-year option {
+        color: #3985a0 !important;
+        background-color: #fff !important;
+        font-family: Open Sans !important;
+        font-size: 14px !important;
+        font-weight: 600;
+    }
+
+    .ui-datepicker-month option[selected],
+    .ui-datepicker-year option[selected] {
+        background-color: #e5edf0 !important;
+    }
+
+    .ui-datepicker .ui-state-hover {
+        /*background: none !important;*/
+        border: 0 !important;
+    }
+
+    .ui-datepicker td {
+        vertical-align: top;
+    }
+
+    .ui-datepicker .ui-state-default {
+        border-radius: 2px;
+        border-color: #edebeb !important;
+    /*     background: white !important; */
+        width: 24px;
+        height: 24px;
+        padding: 0 !important;
+        line-height: 24px;
+        text-align: center !important;
+        font-family: Open Sans, Arial, sans-serif;
+        color: #707070;
+        font-size: 13px;
+        font-weight: 400 !important;
+        margin: 7px 0 0 4px;
+    }
+
+    .ui-datepicker .ui-state-default.ui-state-highlight{
+        border-color: #dcdcdc;
+        background-color: #cff3f8 !important;
+        color: #3e9aba !important;
+    }
+
+    .openemr-calendar .ui-state-default {
+        font-size: 10px;
+        margin: 0;
+    }
+
+    .ui-datepicker td {
+        width: 33px;
+    }
+
+    .openemr-calendar .ui-datepicker td {
+        width: 26px;
+    }
+
+    .openemr-calendar .ui-state-default {
+        width: 26px;
+        height: 20px;
+        line-height: 20px;
+    }
+    .ui-state-default.ui-state-hover {
+        border-color: #dcdcdc;
+        background-color: #cff3f8 !important;
+    }
+
+    .ui-datepicker .ui-state-active {
+        border-color: #dcdcdc;
+        background-color: #cff3f8 !important;
+        color: #3e9aba !important;
+    }
+
+    .ui-datepicker-calendar thead tr th {
+        font-family: Open Sans, Arial, sans-serif;
+        color: #549fa8;
+        font-size: 12px;
+        font-weight: 400;
+        padding: 0.45em 0.3em !important;
+        /*   width: 15px !important; */
+    }
+
+    .openemr-calendar .ui-datepicker-calendar thead tr th {
+        font-size: 10px;
+    }
+
+    .ui-datepicker-close {
+        display: none;
+    }
+
+    .ui-datepicker thead {
+        background-color: #f5f5f5;
+    }
+
+    .openemr-calendar .ui-datepicker thead {
+        background: none;
+    }
+
+    .ui-state-default.ui-datepicker-current {
+        float: none !important;
+        font-family: Open Sans, Arial, sans-serif;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 400;
+        text-align: left;
+        border-width: 0 !important;
+        border: none;
+        vertical-align: top;
+        margin: 0 !important;
+        background-color: transparent !important;
+    }
+
+    .ui-datepicker-buttonpane.ui-widget-content {
+        text-align: center;
+        background-color: #3e9aba;
+        margin: 0 !important;
+        height: 28px;
+        padding: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-year {
+        background-color: transparent;
+    }
+
+    .openemr-calendar .ui-datepicker-month {
+        background-color: transparent;
+    }
+
+    .openemr-calendar .ui-state-default {
+        border: 0 !important;
+    }
+
+    .openemr-calendar .ui-datepicker-month {
+        margin-right: 10px !important;
+    }
+
+</style>
+<script>
+
+    function paymentsAutodata() {
+        $.ajax({
+            type : "GET" ,
+            url :  '/paymentsautodata/',
+
+            // data : {id:'{{id}}'},
+
+
+            success: function(response){
+                staff=response.staff
+                $("#dropdown").empty()
+                $("#dropdown1").empty()
+
+                let invoices=response.invoice_nums
+                let bills=response.bills
+                $("#dropdown").append( `<option id="defaultOption" name="invoice" value='1' selected>-------------</option>`)
+                invoices.forEach((item, index) => {
+                    // alert(x.username)
+
+                    $("#dropdown").append(`<option id="${item.payment_no}" name="invoice" value='${item.payment_no}' >${item.payment_no} </option>`)
+
+                });//end foreach
+                $("#dropdown1").append( `<option id="defaultOption" name="invoice" value='1' selected>-------------</option>`)
+               bills.forEach((item, index) => {
+                    // alert(x.username)
+
+                    $("#dropdown1").append(`<option id="${item.payment_no}" name="invoice" value='${item.payment_no}' >${item.payment_no}  </option>`)
+
+                });//end foreach
+                $("#staffdropdown").append( `<option id="defaultOption" name="staff" value='1' selected>-------------</option>`)
+                staff.forEach((item, index) => {
+                    // alert(x.username)
+
+                    $("#staffdropdown").append(`<option id="${item.user}" name="invoice" value='${item.user.first_name}' >${item.user.first_name} </option>`)
+
+                });
+
+                $("#dropdown").change(function(e) {
+                    let invoiceNo=$("#dropdown").find(":selected").val();
+
+                    invoices.forEach((item, index) => {
+                        if(invoiceNo==item.payment_no){
+                            $("#amount").val(item.payment_amount)
+                            $("#vat").val("5")
+                        }
+                  });
+
+                });
+
+               $("#dropdown1").change(function(e) {
+                    let billNo=$("#dropdown1").find(":selected").val();
+
+                    bills.forEach((item, index) => {
+                        if(billNo==item.payment_no){
+                            $("#amount").val(item.payment_amount)
+                            $("#vat").val("5")
+                        }
+
+
+
+                  });
+
+                });
+
+            }
+
+                });
+
+        };//ending ajax call function for invoices
+
+
+
+
+    $("#expensedropdown").change(function(e) {
+      console.log("dddddd")
+        var option_id = $('#expensedropdown').find(":selected").val();
+        if(option_id==1){
+            $("#foorm").empty()
+
+
+        }
+        if(option_id==2){
+            $("#foorm").html(` {% csrf_token %}
+
+            <p><label for="date">Date:</label>
+
+            <input type="text" name="date" required="" id="date" ></p>
+            <p><label for="paymentNo">Invoice #:</label> <div class="input-group mb-3">
+                <select name="paymentNo" class="custom-select" id="dropdown">
+
+                 <!-- select data-->
+                </select>
+              </div> </p>
+            <p><label for="amount">Amount:</label> <input type="number" name="amount" required="" id="amount"></p>
+            <p><label for="vat">Vat %:</label> <input type="number" name="vat" required="" id="vat"></p>
+            <p><label for="staff">Received By:</label   > <div class="input-group mb-3">
+                <select name="staff" class="custom-select" id="staffdropdown">
+
+                 <!-- select data-->
+                </select>
+              </div> </p>
+              <p><label for="channel">Channel:</label   > <div class="input-group mb-3">
+                <select name="channel" class="custom-select" id="channel">
+                    <option id="1" name="channel" value='-------' selected>-----------</option>
+                    <option id="2" name="channel" value='Cash'  >Cash</option>
+                    <option id="3" name="channel" value='Online'  >Online</option>
+                    <option id="4" name="channel" value='Cheque'  >Cheque</option>
+                    <option id="5" name="channel" value='Card'  >Card</option>
+                 <!-- select data-->
+                </select>
+              </div> </p>
+
+          <div class="actions">
+            <button type="submit" class="ui teal button">
+              Save
+            </button>
+            <br><br>`)
+
+
+        }
+        else if(option_id==3){
+                $("#foorm").html(` {% csrf_token %}
+
+                <p><label for="date">Date:</label>
+
+                <input type="text" name="date" required="" id="date" ></p>
+                <p><label for="paymentNo">Bill #:</label> <div class="input-group mb-3">
+                    <select name="paymentNo" class="custom-select" id="dropdown1">
+
+                    <!-- select data-->
+                    </select>
+                </div> </p>
+                <p><label for="amount">Amount:</label> <input type="number" name="amount" required="" id="amount"></p>
+                <p><label for="vat">Vat %:</label> <input type="number" name="vat" required="" id="vat"></p>
+                <p><label for="staff">Paid By:</label   > <div class="input-group mb-3">
+                    <select name="staff" class="custom-select" id="staffdropdown">
+
+                    <!-- select data-->
+                    </select>
+                </div> </p>
+                <p><label for="channel">Channel:</label   > <div class="input-group mb-3">
+                    <select name="channel" class="custom-select" id="channel">
+                        <option id="1" name="channel" value='----------' selected>-----------</option>
+                        <option id="2" name="channel" value='Cash'  >Cash</option>
+                        <option id="3" name="channel" value='Online'  >Online</option>
+                        <option id="4" name="channel" value='Cheque'  >Cheque</option>
+                        <option id="5" name="channel" value='Card'  >Card</option>
+                    <!-- select data-->
+                    </select>
+                </div> </p>
+
+            <div class="actions">
+                <button type="submit" class="ui teal button">
+                Save
+                </button>
+                <br><br>`)
+        }
+
+        $(function () {
+            $("#date").prop("autocomplete", "off")
+            $("#date").datepicker({ dateFormat: 'yy-mm-dd' });
+          });
+
+
+          paymentsAutodata();
+
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+    $("#foorm").submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        console.log(formData)
+    $.ajax({
+        type : "POST" ,
+        url :  '/updatestatus/',
+        contentType: false,
+        processData: false,
+        data : formData,
+    // data : {id:'{{id}}'},
+
+
+        success: function(response){
+            paymentsAutodata();
+            $(document).Toasts('create', {
+                class: 'bg-info',
+                title: 'Toast Title',
+                subtitle: 'Subtitle',
+                body: 'Payment Processed!',
+                autohide: true
+                });
+
+            $("#date").val('')
+            $("#amount").val('')
+            $("#vat").val('')
+            $("#staffdropdown").val('')
+            $("#channel").val('')
+
+            $("#dropdown").val('-------')
+            $("#dropdown1").val('-------')
+            $("#id_overTime").val('')
+            $("#id_others").val('')
+            $("#id_truck_no").val('')
+            $("#id_renewalFee").val('')
+            $("#id_fuel").val('')
+            $("#id_maintenance").val('')
+            $("#id_repair_replace").val('')
+            $("#id_parking").val('')
+            $("#id_others").val('')
+
+            $("#id_officeRent").val('')
+            $("#id_utilityBills").val('')
+            $("#id_stationary").val('')
+            $("#id_kitchen").val('')
+
+
+            $("#id_expenseName").val('')
+            $("#id_expenseAmount").val('')
+
+
+
+        }
+});
+    });
+</script>
+{% endblock content%}

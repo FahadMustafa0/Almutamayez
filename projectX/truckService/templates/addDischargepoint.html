@@ -1,0 +1,109 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% block title%}
+Discharge Point Page
+{% endblock title%}
+{% block content%}
+
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header" style="padding : 20px">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Discharge Points Detail</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">DischargePoint</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <section class="col-lg-7 connectedSortable">
+
+
+            {% comment %} {% if confirm %}
+            <div class="ui green message">Customer Created Successfully!</div>
+            {% endif %} {% endcomment %}
+            <div id="msgdiv"> </div>
+            <form action="" id="foorm" method="POST" class="ui form" enctype='multipart/form-data' >
+
+                {% csrf_token %}
+                {{ dform.as_p }}
+
+              <div class="actions">
+                <button type='submit' class="ui teal button">
+                  Add New
+                  {% comment %} <i class="checkmark icon"></i> {% endcomment %}
+                </button>
+                <br><br>
+              </div>
+          </form>
+
+
+
+
+
+        </section>
+
+       <!-- Section for body-->
+        <section class="col-lg-5 connectedSortable">
+
+        </section>
+
+      </div>
+      <!-- /.row (main row) -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<script>
+    $("#foorm").submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        console.log(formData)
+    $.ajax({
+        type : "POST" ,
+        url :  '/addDischarge/',
+        contentType: false,
+        processData: false,
+        data : formData,
+        
+    // data : {id:'{{id}}'},
+
+
+        success: function(response){
+            if(response.confirm==true){
+            //$("#msgdiv").html('<div class="ui green message">Updated Successfully!</div>')
+            $(document).Toasts('create', {
+              class: 'bg-info',
+              title: 'Toast Title',
+              subtitle: 'Subtitle',
+              body: 'Updated Successfully!',
+              autohide: true
+              });
+            $("#id_locationName").val('')
+            $("#id_location").val('')
+           // $("#id_location").val('')
+            $("#id_Cost").val('')
+            $("#id_Vat").val('')
+
+
+         }
+        }
+});
+    });
+</script>
+{% endblock content%}
