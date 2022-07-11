@@ -236,6 +236,9 @@ class nft_detail(models.Model):
     def __str__(self):
             return str(self.order_no)
 
+# writing logic only/
+nft_objects=nft_detail.objects.filter(discharge_point="'Jadah'")
+
 class staffExpense(models.Model):
     date = models.DateField(null=True)
     staff = models.ForeignKey(staffProfile, related_name="staff", on_delete=models.CASCADE)
